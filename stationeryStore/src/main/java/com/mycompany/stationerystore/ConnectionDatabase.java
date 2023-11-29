@@ -4,10 +4,51 @@
  */
 package com.mycompany.stationerystore;
 
+import java.sql.*;
+
+
 /**
  *
  * @author Septiancesare
  */
 public class ConnectionDatabase {
+    String url = "jdbc:mysql://localhost:3306/sistemadminperpus";
+    String username = "root";
+    String password = "";
     
+    private static Connection koneksi;
+    private static ConnectionDatabase instance;
+    
+    
+    private void connect() throws SQLException{
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            koneksi = DriverManager.getConnection(url, username, password);
+            
+        }catch(ClassNotFoundException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    
+    public static synchronized ConnectionDatabase getInstance() throws SQLException {
+        if (instance == null) {
+            instance = new ConnectionDatabase();
+            instance.connect();
+        }
+        return instance;
+    }
+    
+    public Connection getConnection(){
+        return koneksi;
+    }
+    
+    public void closeConnection(){
+        if (koneksi != null) {
+            try {
+                koneksi.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
