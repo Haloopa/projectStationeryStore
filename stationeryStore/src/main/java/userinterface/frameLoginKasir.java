@@ -4,6 +4,8 @@
  */
 package userinterface;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Septiancesare
@@ -63,6 +65,11 @@ public class frameLoginKasir extends javax.swing.JFrame {
         btnLogin.setForeground(new java.awt.Color(255, 255, 255));
         btnLogin.setText("LOGIN");
         btnLogin.setBorder(null);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 480, 390, 90));
 
         btnHome.setBackground(new java.awt.Color(0, 153, 0));
@@ -96,6 +103,21 @@ public class frameLoginKasir extends javax.swing.JFrame {
         landing.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnHomeActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO add your handling code here:
+        frameMenuKasir menuKasir = new frameMenuKasir();
+        String username = inputUsername.getText();
+        char[] password = inputPassword.getPassword();
+            String passwordString = new String(password);
+            
+        if (username.equals("kasir") && passwordString.equals("kasir")){
+            menuKasir.setVisible(true);
+            this.dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Login Gagal! Pastikan Username dan Password sesuai!", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
