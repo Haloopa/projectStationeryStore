@@ -12,7 +12,7 @@ import java.sql.*;
  * @author Septiancesare
  */
 public class ConnectionDatabase {
-    String url = "jdbc:mysql://localhost:3306/sistemadminperpus";
+    String url = "jdbc:mysql://localhost:3306/sistemkasir";
     String username = "root";
     String password = "";
     

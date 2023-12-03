@@ -4,6 +4,15 @@
  */
 package userinterface;
 
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Septiancesare
@@ -104,7 +113,37 @@ public class frameLoginAdmin extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
+        frameMenuAdmin menu = new frameMenuAdmin();
         
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            String username = inputUsername.getText();
+            char[] password = inputPassword.getPassword();
+            String passwordString = new String(password);
+            
+            String query = "SELECT * FROM datapegawai WHERE idPegawai = ? AND password = ? AND status = 'admin'";
+            PreparedStatement statement = connect.prepareStatement(query);
+    
+            statement.setString(1, username);
+            statement.setString(2, passwordString);
+            ResultSet rs = statement.executeQuery();
+            
+            if(rs.next()){
+                menu.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Login Gagal! Pastikan Username dan Password sesuai!", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            rs.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(frameLoginKasir.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
