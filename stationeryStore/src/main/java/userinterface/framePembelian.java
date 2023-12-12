@@ -56,38 +56,67 @@ public class framePembelian extends javax.swing.JFrame {
         labelIdPembelian.setText("jLabel1");
         jPanel1.add(labelIdPembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
 
+        inputIdBarang.setBackground(new java.awt.Color(255, 255, 255));
+        inputIdBarang.setForeground(new java.awt.Color(0, 0, 0));
         inputIdBarang.setText("jTextField1");
-        jPanel1.add(inputIdBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 270, 40));
+        inputIdBarang.setBorder(null);
+        jPanel1.add(inputIdBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 250, 20));
 
+        inputIdAdmin.setBackground(new java.awt.Color(255, 255, 255));
+        inputIdAdmin.setForeground(new java.awt.Color(0, 0, 0));
         inputIdAdmin.setText("jTextField1");
-        jPanel1.add(inputIdAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, 270, 40));
+        inputIdAdmin.setBorder(null);
+        jPanel1.add(inputIdAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 250, 20));
 
+        btnCariBarang.setBackground(new java.awt.Color(153, 255, 153));
+        btnCariBarang.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnCariBarang.setForeground(new java.awt.Color(0, 0, 0));
         btnCariBarang.setText("Cari");
-        jPanel1.add(btnCariBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, 110, 40));
+        btnCariBarang.setBorder(null);
+        jPanel1.add(btnCariBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 440, 100, 40));
 
+        btnCariAdmin.setBackground(new java.awt.Color(153, 255, 153));
+        btnCariAdmin.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnCariAdmin.setForeground(new java.awt.Color(0, 0, 0));
         btnCariAdmin.setText("Cari");
-        jPanel1.add(btnCariAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 260, 110, 40));
+        btnCariAdmin.setBorder(null);
+        btnCariAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariAdminActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnCariAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 260, 100, 40));
 
         labelNamaAdmin.setForeground(new java.awt.Color(0, 0, 0));
         labelNamaAdmin.setText("jLabel1");
         jPanel1.add(labelNamaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 326, 360, 30));
 
+        inputDistributor.setBackground(new java.awt.Color(255, 255, 255));
+        inputDistributor.setForeground(new java.awt.Color(0, 0, 0));
         inputDistributor.setText("jTextField1");
-        jPanel1.add(inputDistributor, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 380, 40));
+        inputDistributor.setBorder(null);
+        jPanel1.add(inputDistributor, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 360, 20));
 
         labelNamaBarang.setText("jLabel1");
         jPanel1.add(labelNamaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 500, 370, 40));
 
+        inputJumlah.setBackground(new java.awt.Color(255, 255, 255));
+        inputJumlah.setForeground(new java.awt.Color(0, 0, 0));
         inputJumlah.setText("jTextField1");
-        jPanel1.add(inputJumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 560, 170, 40));
+        inputJumlah.setBorder(null);
+        jPanel1.add(inputJumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(42, 570, 150, 20));
 
+        inputIsiPerBox.setBackground(new java.awt.Color(255, 255, 255));
+        inputIsiPerBox.setForeground(new java.awt.Color(0, 0, 0));
         inputIsiPerBox.setText("jTextField1");
-        jPanel1.add(inputIsiPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 560, 180, 40));
+        inputIsiPerBox.setBorder(null);
+        jPanel1.add(inputIsiPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 570, 160, 20));
 
+        inputHargaPerBox.setBackground(new java.awt.Color(255, 255, 255));
+        inputHargaPerBox.setForeground(new java.awt.Color(0, 0, 0));
         inputHargaPerBox.setText("jTextField1");
-        jPanel1.add(inputHargaPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 620, 380, 40));
+        inputHargaPerBox.setBorder(null);
+        jPanel1.add(inputHargaPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 630, 360, 20));
 
         labelRP.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 36)); // NOI18N
         labelRP.setForeground(new java.awt.Color(0, 0, 0));
@@ -99,9 +128,15 @@ public class framePembelian extends javax.swing.JFrame {
         labelTotalHarga.setText("200000");
         jPanel1.add(labelTotalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 660, 190, 50));
 
+        btnHapus.setBackground(new java.awt.Color(219, 216, 216));
+        btnHapus.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
+        btnHapus.setForeground(new java.awt.Color(0, 0, 0));
         btnHapus.setText("Hapus");
         jPanel1.add(btnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 290, 120, 60));
 
+        btnTambah.setBackground(new java.awt.Color(219, 216, 216));
+        btnTambah.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
+        btnTambah.setForeground(new java.awt.Color(0, 0, 0));
         btnTambah.setText("Tambah");
         btnTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,6 +145,9 @@ public class framePembelian extends javax.swing.JFrame {
         });
         jPanel1.add(btnTambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 150, 120, 60));
 
+        btnUbah.setBackground(new java.awt.Color(219, 216, 216));
+        btnUbah.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
+        btnUbah.setForeground(new java.awt.Color(0, 0, 0));
         btnUbah.setText("Ubah");
         jPanel1.add(btnUbah, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 220, 120, 60));
 
@@ -147,6 +185,10 @@ public class framePembelian extends javax.swing.JFrame {
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void btnCariAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariAdminActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCariAdminActionPerformed
 
     /**
      * @param args the command line arguments
