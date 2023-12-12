@@ -64,6 +64,11 @@ public class frameMenuKasir extends javax.swing.JFrame {
         btnMember.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
         btnMember.setForeground(new java.awt.Color(0, 51, 51));
         btnMember.setText("DATA MEMBER");
+        btnMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMemberActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 310, 320, 210));
 
         btnKeluar.setBackground(new java.awt.Color(102, 102, 102));
@@ -99,7 +104,17 @@ public class frameMenuKasir extends javax.swing.JFrame {
 
     private void btnTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransaksiActionPerformed
         // TODO add your handling code here:
+        framePenjualan transaksi = new framePenjualan();
+        transaksi.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTransaksiActionPerformed
+
+    private void btnMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMemberActionPerformed
+        // TODO add your handling code here:
+        frameDataMember dataMember = new frameDataMember();
+        dataMember.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnMemberActionPerformed
 
     /**
      * @param args the command line arguments

@@ -88,6 +88,11 @@ public class frameMenuAdmin extends javax.swing.JFrame {
         btnDataPegawai.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         btnDataPegawai.setForeground(new java.awt.Color(0, 51, 51));
         btnDataPegawai.setText("DATA PEGAWAI");
+        btnDataPegawai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDataPegawaiActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnDataPegawai, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 290, 210, 210));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/menuAdmin.png"))); // NOI18N
@@ -107,6 +112,10 @@ public class frameMenuAdmin extends javax.swing.JFrame {
 
     private void btnDataBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataBarangActionPerformed
         // TODO add your handling code here:
+        frameDataBarang dataBarang = new frameDataBarang();
+        dataBarang.setVisible(true);
+        this.dispose();
+        
     }//GEN-LAST:event_btnDataBarangActionPerformed
 
     private void btnPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPembelianActionPerformed
@@ -116,6 +125,13 @@ public class frameMenuAdmin extends javax.swing.JFrame {
     private void btnRiwayatTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRiwayatTransaksiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRiwayatTransaksiActionPerformed
+
+    private void btnDataPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataPegawaiActionPerformed
+        // TODO add your handling code here:
+        frameDataPegawai dataPegawai = new frameDataPegawai();
+        dataPegawai.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnDataPegawaiActionPerformed
 
     /**
      * @param args the command line arguments
