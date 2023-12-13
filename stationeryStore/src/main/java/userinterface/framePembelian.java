@@ -4,6 +4,13 @@
  */
 package userinterface;
 
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author user
@@ -45,6 +52,7 @@ public class framePembelian extends javax.swing.JFrame {
         btnUbah = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        btnBack = new javax.swing.JButton();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -174,6 +182,19 @@ public class framePembelian extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(626, 110, 680, 630));
 
+        btnBack.setBackground(java.awt.Color.gray);
+        btnBack.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnBack.setForeground(new java.awt.Color(255, 255, 255));
+        btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/homebutton.png"))); // NOI18N
+        btnBack.setText("BACK");
+        btnBack.setBorder(null);
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 20, 120, 40));
+
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/pagePembelian.png"))); // NOI18N
         jPanel1.add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -188,7 +209,47 @@ public class framePembelian extends javax.swing.JFrame {
 
     private void btnCariAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariAdminActionPerformed
         // TODO add your handling code here:
+        String idPegawai = inputIdAdmin.getText(); 
+        String statusPegawai = "admin"; 
+        String namaPegawai = getNamaPegawaiByIdAndStatus(idPegawai,statusPegawai);
+
+        if (namaPegawai != null) {
+            JOptionPane.showMessageDialog(this, "Nama Pegawai dengan ID " + idPegawai + " dan status " + statusPegawai + ": " + namaPegawai);
+        } else {
+            JOptionPane.showMessageDialog(this, "Pegawai dengan ID " + idPegawai + " dan status " + statusPegawai + " tidak ditemukan.");
+        }
     }//GEN-LAST:event_btnCariAdminActionPerformed
+    private String getNamaPegawaiByIdAndStatus(String idPegawai, String statusPegawai) {
+        String query = "SELECT namaPegawai FROM tabel_pegawai WHERE idPegawai = ? AND statusPegawai = ?";
+        String namaPegawai = null;
+
+   try (
+        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+        Connection connect = koneksidatabase.getConnection();
+        PreparedStatement preparedStatement = connect.prepareStatement(query)) {
+
+    preparedStatement.setString(1, idPegawai);
+    preparedStatement.setString(2, statusPegawai);
+
+    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+            namaPegawai = resultSet.getString("namaPegawai");
+        }
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+}
+
+
+    return namaPegawai;
+    }
+    
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        frameMenuAdmin admin = new frameMenuAdmin();
+        admin.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,6 +288,7 @@ public class framePembelian extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bg;
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCariAdmin;
     private javax.swing.JButton btnCariBarang;
     private javax.swing.JButton btnHapus;

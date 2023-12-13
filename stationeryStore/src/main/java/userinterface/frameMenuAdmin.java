@@ -120,6 +120,9 @@ public class frameMenuAdmin extends javax.swing.JFrame {
 
     private void btnPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPembelianActionPerformed
         // TODO add your handling code here:
+        framePembelian pembelian = new framePembelian();
+        pembelian.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnPembelianActionPerformed
 
     private void btnRiwayatTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRiwayatTransaksiActionPerformed
