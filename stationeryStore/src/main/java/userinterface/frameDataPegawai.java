@@ -3,20 +3,64 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package userinterface;
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.awt.Color;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Asus
  */
 public class frameDataPegawai extends javax.swing.JFrame {
-
-    /**
-     * Creates new form frameDataPegawai
-     */
     public frameDataPegawai() {
         initComponents();
+                showData();
     }
+    private void refreshForm(){
+        inputIdPegawai.setText(null);
+        inputNamaPegawai.setText(null);
+        inputNomorHpPegawai.setText(null);
+        inputEmailPegawai.setText(null);
+        inputAlamatPegawai.setText(null);
+        inputGender.setSelectedItem(null);
+        inputPassword.setText(null);
+        inputStatus.setSelectedItem(null);
+    }
+    private void showData(){
+        DefaultTableModel table = new DefaultTableModel();
+        table.addColumn("ID Pegawai");
+        table.addColumn("Nama Pegawai");
+        table.addColumn("Nomor HP Pegawai");
+        table.addColumn("Email Pegawai");
+        table.addColumn("Alamat Pegawai");
+        table.addColumn("Gender");
+        table.addColumn("Password");
+        table.addColumn("Status");
+        tabelDataPegawai.setModel(table);
+        
+        try {
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            Statement st = connect.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM datapegawai");
 
+            while (rs.next()) {
+                table.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)});
+                tabelDataPegawai.setModel(table);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -115,6 +159,11 @@ public class frameDataPegawai extends javax.swing.JFrame {
         btnHapus.setBackground(java.awt.Color.lightGray);
         btnHapus.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 290, 120, 70));
 
         btnUbah.setBackground(java.awt.Color.lightGray);
@@ -130,6 +179,11 @@ public class frameDataPegawai extends javax.swing.JFrame {
         btnTambah.setBackground(java.awt.Color.lightGray);
         btnTambah.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnTambah.setText("Tambah");
+        btnTambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnTambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 220, 120, 70));
 
         btnBack.setBackground(java.awt.Color.gray);
@@ -162,6 +216,11 @@ public class frameDataPegawai extends javax.swing.JFrame {
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        tabelDataPegawai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelDataPegawaiMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tabelDataPegawai);
@@ -203,15 +262,118 @@ public class frameDataPegawai extends javax.swing.JFrame {
     }//GEN-LAST:event_inputNamaPegawaiActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
+        try{
+            String sql = "UPDATE datapegawai SET idPegawai = '" + inputIdPegawai.getText()
+                    + "' , namaPegawai = '" + inputNamaPegawai.getText()
+                    + "' , nomorHpPegawai = '" + inputNomorHpPegawai.getText()
+                    + "' , emailPegawai = '" + inputEmailPegawai.getText()
+                    + "' , alamatPegawai = '" + inputAlamatPegawai.getText()
+                    + "' , gender = '" + inputGender.getSelectedItem()
+                    + "' , password = '" + inputPassword.getText()
+                    + "' , status = '" + inputStatus.getSelectedItem()
+                    + "' WHERE idPegawai = '" + inputIdPegawai.getText() + "'";
+            
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Diubah!");
+            showData();
+            refreshForm();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        FrameLanding landing = new FrameLanding();
-        landing.setVisible(true);
+        frameMenuAdmin menu = new frameMenuAdmin();
+        menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        try {
+            String sql = "INSERT INTO datapegawai VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            
+            ps.setString(1, inputIdPegawai.getText());
+            ps.setString(2, inputNamaPegawai.getText());
+            ps.setString(3, inputNomorHpPegawai.getText());
+            ps.setString(4, inputEmailPegawai.getText());
+            ps.setString(5, inputAlamatPegawai.getText());
+            ps.setString(6, inputGender.getSelectedItem().toString());
+            ps.setString(7, inputPassword.getText());
+            ps.setString(8, inputStatus.getSelectedItem().toString());
+            
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Ditambahkan!");
+            showData();
+            refreshForm();
+        }catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+    String idPegawai = inputIdPegawai.getText();
+    int confirmDialog = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data pegawai?", "Yes", JOptionPane.YES_NO_OPTION);
+    
+    if (confirmDialog == JOptionPane.YES_OPTION) {
+        try {
+            String sql = "DELETE FROM datapegawai WHERE idPegawai = ?";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, idPegawai);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Dihapus!");
+            showData();
+            refreshForm();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void tabelDataPegawaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelDataPegawaiMouseClicked
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+        int row = tabelDataPegawai.getSelectedRow();
+        String idPegawai = (String) tabelDataPegawai.getValueAt(row, 0);
+        inputIdPegawai.setText(idPegawai);
+
+        String namaPegawai = (String) tabelDataPegawai.getValueAt(row, 1);
+        inputNamaPegawai.setText(namaPegawai);
+
+        String nomorHpPegawai = (String) tabelDataPegawai.getValueAt(row, 2);
+        inputNomorHpPegawai.setText(nomorHpPegawai);
+
+        String emailPegawai = (String) tabelDataPegawai.getValueAt(row, 3);
+        inputEmailPegawai.setText(emailPegawai);
+        
+        String alamatPegawai = (String) tabelDataPegawai.getValueAt(row, 4);
+        inputAlamatPegawai.setText(alamatPegawai);
+        
+        String gender = (String) tabelDataPegawai.getValueAt(row, 5);
+        inputGender.setSelectedItem(gender);
+        
+        String password = (String) tabelDataPegawai.getValueAt(row, 6);
+        inputPassword.setText(password);
+        
+        String status = (String) tabelDataPegawai.getValueAt(row, 7);
+        inputStatus.setSelectedItem(status);
+    }//GEN-LAST:event_tabelDataPegawaiMouseClicked
 
     /**
      * @param args the command line arguments
