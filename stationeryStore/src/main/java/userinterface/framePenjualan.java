@@ -3,9 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package userinterface;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,6 +22,10 @@ import javax.swing.table.DefaultTableModel;
  * @author acer
  */
 public class framePenjualan extends javax.swing.JFrame {
+    private JFrame frameMenuKasir; 
+    public framePenjualan(JFrame frameMenuKasir) {
+        this.frameMenuKasir = frameMenuKasir;
+    }
 
     /**
      * Creates new form framePembelian
@@ -24,8 +35,130 @@ public class framePenjualan extends javax.swing.JFrame {
         initComponents();
         IDBarang();
         Total();
-        FinalDiskon();
+        FinalHarga();
         
+    }
+    
+    private void IDKasir() {
+        inputIDPegawai.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                  String idPegawai;
+                  idPegawai = (String) inputIDPegawai.getText();
+                  Connection kon = null;
+                  PreparedStatement ppst = null;
+                  ResultSet rslt = null;
+                  
+                  try {
+                      kon = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistemkasir", "username", "password");
+                      ppst = kon.prepareStatement("SELECT namaPegawai FROM penjualan WHERE idPegawai");
+                      ppst.setString(1, idPegawai);
+                      rslt = ppst.executeQuery();
+                  
+                      if (rslt.next()) {
+                          String ip = rslt.getString("idPegawai");
+                          
+                          inputIDPegawai.setText(ip);
+                          
+                        } else {
+                            inputIDPegawai.setText("");
+                        }
+                      
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        } finally {
+                            try {
+                            if (rslt != null) rslt.close();
+                            if (ppst != null) ppst.close();
+                            if (kon != null) kon.close();
+                            } catch (SQLException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+    
+    private void IDMember() {
+        inputIDMember.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                  String idMember;
+                  idMember = (String) inputIDMember.getText();
+                  Connection con = null;
+                  PreparedStatement pps = null;
+                  ResultSet rst = null;
+                  
+                  try {
+                      con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistemkasir", "username", "password");
+                      pps = con.prepareStatement("SELECT nama, noHP, email, alamat FROM datamember WHERE idMember");
+                      pps.setString(1, idMember);
+                      rst = pps.executeQuery();
+                      
+                      if (rst.next()) {
+                          member.setSelected(true);
+                          applyDiskonMember();
+                      } else {
+                          member.setSelected(false);
+                          removeDiskonMember();
+                      }
+                  } catch (SQLException ex) {
+                      ex.printStackTrace();
+                  } finally {
+                      try {
+                          if (rst != null) rst.close();
+                          if (pps != null) pps.close();
+                          if (con != null) con.close();
+                      } catch (SQLException ex) {
+                          ex.printStackTrace();
+                      }
+                  }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+    
+    private void jmlTotalHarga() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+          int subTotal = 0;
+          for (int a = 0; a < tbPenjualan.getRowCount(); a ++) {
+              subTotal += Integer.parseInt((String) tbPenjualan.getValueAt(a, 6).toString());
+          }
+          
+          txtTotalHarga.setText(nf.format(subTotal));
+    }
+    
+    private void applyDiskonMember() {
+        double hasil = Double.parseDouble(txtTotalHarga.getText());
+        double dm = hasil * 0.1;
+        hasilMember.setText(String.valueOf(dm));
+    }
+    
+    private void removeDiskonMember() {
+        double hasil = Double.parseDouble(txtTotalHarga.getText());
+        double dm = hasil * 0;
+        hasilMember.setText(String.valueOf(dm));
     }
     
     private void IDBarang() {
@@ -35,6 +168,52 @@ public class framePenjualan extends javax.swing.JFrame {
 //                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                   String idBarang;
                   idBarang = (String) inputIDBarang.getText();
+                  Connection conn = null;
+                  PreparedStatement ps = null;
+                  ResultSet rs = null;
+                  
+                  try {
+                      conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kasirtoko", "username", "password");
+                      ps = conn.prepareStatement("SELECT namaBarang, hargaJual FROM databarang WHERE idBarang = ?");
+                      ps.setString(1, idBarang);
+                      rs = ps.executeQuery();
+                      
+                      if (rs.next()) {
+                          String nb = rs.getString("namaBarang");
+                          double hrg = rs.getDouble("hargaJual");
+                          
+                          txtNamaBarang.setText(nb);
+                          txtHargaBarang.setText(nf.format(hrg));
+                          
+                          calculateHarga();
+                        } else {
+                            txtNamaBarang.setText("");
+                            txtHargaBarang.setText("");
+                        }
+                  } catch (SQLException ex) {
+                      ex.printStackTrace();
+                  } finally {
+                      try {
+                          if (rs != null) rs.close();
+                          if (ps != null) ps.close();
+                          if (conn != null) conn.close();
+                      } catch (SQLException ex) {
+                          ex.printStackTrace();
+                      }
+                  }     
+            }
+            
+            private void calculateHarga() {
+                try {
+                    double hj = Double.parseDouble(txtHargaBarang.getText().replace(",", ""));
+                    int qty = Integer.parseInt(inputQTY.getText());
+                    double db = Double.parseDouble(inputDiskonBarang.getText());
+                    
+                    double jh = (hj * qty) - (hj * db);
+                    txtJumlahHarga.setText(nf.format(jh));
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
@@ -49,44 +228,13 @@ public class framePenjualan extends javax.swing.JFrame {
         });
     }
     
-    private void FinalDiskon(){
-            txtDiskon.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-          
-            int diskon, hasilDiskon;
-            diskon = Integer.parseInt(txtJumlahHarga.getText().replace(".", "")) * Integer.parseInt(txtDiskon.getText().replace("", "")) / 100;
-            hasilDiskon = Integer.parseInt(txtJumlahHarga.getText().replace(".", "")) - diskon;
-            
-            txtHasilDiskon.setText(nf.format(diskon));
-            
-            //MEMBER
-            int hasil_Member = 0;
-            if (member.isSelected()) {
-                hasil_Member = hasilDiskon * 10 / 100;
-                hasilMember.setText(nf.format(hasil_Member));
-            } else {
-                hasil_Member = hasilDiskon * 0 / 100;
-                hasilMember.setText(nf.format(hasil_Member));
-            }
-
-            //TOTAL HARGA
-            int totalAkhir;
-            totalAkhir = hasilDiskon - hasil_Member;
+    private void FinalHarga(){
+            double totalAkhir;
+            double th = Double.parseDouble(txtTotalHarga.getText());
+            double hm = Double.parseDouble(hasilMember.getText());
+            totalAkhir = th - hm;
+            hasilHargaAkhir.setText(nf.format(totalAkhir));
             viewHarga.setText("Rp. " + nf.format(totalAkhir));
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        });
     }
     
     private void Total() {
@@ -97,11 +245,11 @@ public class framePenjualan extends javax.swing.JFrame {
                   try {
                       int hasil = 0; 
                       if (inputQTY.getText().equals("")) {
-                          hasil = Integer.parseInt(txtHargaBarang.getText().replace(".", "")) * 0;
+                          hasil = (int) (Double.parseDouble(txtHargaBarang.getText().replace(".", "")) * 0);
                       } else {
-                            hasil = Integer.parseInt(txtHargaBarang.getText().replace(".", "")) * Integer.parseInt(inputQTY.getText());
+                            hasil = (int) (Double.parseDouble(txtHargaBarang.getText().replace(".", "")) * Integer.parseInt(inputQTY.getText()) * Double.parseDouble(inputDiskonBarang.getText()));
                       }
-                      txtTotalHarga.setText(nf.format(hasil));
+                      txtJumlahHarga.setText(nf.format(hasil));
                   } catch (NumberFormatException e) {
                       
                   }
@@ -131,14 +279,14 @@ public class framePenjualan extends javax.swing.JFrame {
 
         viewHarga = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        idKasir = new javax.swing.JLabel();
-        inputIDKasir = new javax.swing.JTextField();
+        idPegawai = new javax.swing.JLabel();
+        inputIDPegawai = new javax.swing.JTextField();
         idBarang = new javax.swing.JLabel();
         inputIDBarang = new javax.swing.JTextField();
         txtNamaBarang = new javax.swing.JTextField();
         inputQTY = new javax.swing.JTextField();
         txtHargaBarang = new javax.swing.JTextField();
-        txtTotalHarga = new javax.swing.JTextField();
+        txtJumlahHarga = new javax.swing.JTextField();
         txtNamaKasir = new javax.swing.JTextField();
         idMember = new javax.swing.JLabel();
         inputIDMember = new javax.swing.JTextField();
@@ -146,36 +294,45 @@ public class framePenjualan extends javax.swing.JFrame {
         txtNoHP = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         txtAlamat = new javax.swing.JTextField();
-        txtDiskonBarang = new javax.swing.JTextField();
+        inputDiskonBarang = new javax.swing.JTextField();
+        idPenjualan = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPenjualan = new javax.swing.JTable();
-        totalHarga = new javax.swing.JLabel();
-        txtJumlahHarga = new javax.swing.JTextField();
-        diskon = new javax.swing.JLabel();
-        txtDiskon = new javax.swing.JTextField();
-        txtHasilDiskon = new javax.swing.JTextField();
+        pengembalian = new javax.swing.JLabel();
+        txtPengembalian = new javax.swing.JTextField();
         hargaAkhir = new javax.swing.JLabel();
         hasilHargaAkhir = new javax.swing.JTextField();
         totalItem = new javax.swing.JLabel();
         hasilTotalItem = new javax.swing.JLabel();
         member = new javax.swing.JCheckBox();
         hasilMember = new javax.swing.JTextField();
+        totalHarga = new javax.swing.JLabel();
+        txtTotalHarga = new javax.swing.JTextField();
+        pembayaran = new javax.swing.JLabel();
+        inputPembayaran = new javax.swing.JTextField();
+        print = new javax.swing.JButton();
+        reset = new javax.swing.JButton();
+        back = new javax.swing.JButton();
+        background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(166, 195, 174));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         viewHarga.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         viewHarga.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         viewHarga.setText("Rp. ");
+        getContentPane().add(viewHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 20, 339, -1));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setBackground(new java.awt.Color(166, 195, 174));
 
-        idKasir.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        idKasir.setText("ID Kasir");
+        idPegawai.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idPegawai.setText("ID Pegawai");
 
-        inputIDKasir.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        inputIDKasir.addActionListener(new java.awt.event.ActionListener() {
+        inputIDPegawai.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        inputIDPegawai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inputIDKasirActionPerformed(evt);
+                inputIDPegawaiActionPerformed(evt);
             }
         });
 
@@ -196,15 +353,20 @@ public class framePenjualan extends javax.swing.JFrame {
         txtHargaBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtHargaBarang.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
-        txtTotalHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtTotalHarga.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtTotalHarga.addActionListener(new java.awt.event.ActionListener() {
+        txtJumlahHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtJumlahHarga.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtJumlahHarga.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTotalHargaActionPerformed(evt);
+                txtJumlahHargaActionPerformed(evt);
             }
         });
 
         txtNamaKasir.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtNamaKasir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNamaKasirActionPerformed(evt);
+            }
+        });
 
         idMember.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         idMember.setText("ID Member");
@@ -227,11 +389,18 @@ public class framePenjualan extends javax.swing.JFrame {
         txtAlamat.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtAlamat.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
-        txtDiskonBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtDiskonBarang.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtDiskonBarang.addActionListener(new java.awt.event.ActionListener() {
+        inputDiskonBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        inputDiskonBarang.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        inputDiskonBarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDiskonBarangActionPerformed(evt);
+                inputDiskonBarangActionPerformed(evt);
+            }
+        });
+
+        idPenjualan.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idPenjualanActionPerformed(evt);
             }
         });
 
@@ -242,22 +411,22 @@ public class framePenjualan extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(idKasir)
+                    .addComponent(idPegawai)
                     .addComponent(idBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(idMember))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(inputIDKasir, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inputIDPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputIDBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputIDMember, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNamaKasir, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNamaMember, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNamaKasir, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNamaMember, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtHargaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtNoHP, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -266,22 +435,24 @@ public class framePenjualan extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(inputQTY, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(69, 69, 69)
-                                .addComponent(txtDiskonBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(inputDiskonBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(36, 36, 36)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTotalHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                            .addComponent(txtJumlahHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(idPenjualan, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(idKasir)
-                    .addComponent(inputIDKasir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNamaKasir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idPegawai)
+                    .addComponent(inputIDPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNamaKasir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(idPenjualan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idMember)
@@ -297,11 +468,14 @@ public class framePenjualan extends javax.swing.JFrame {
                     .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtHargaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputQTY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTotalHarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDiskonBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(txtJumlahHarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inputDiskonBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 137, 1288, -1));
+
+        tbPenjualan.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         tbPenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -315,38 +489,39 @@ public class framePenjualan extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tbPenjualan);
 
-        totalHarga.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        totalHarga.setText("JUMLAH HARGA");
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 1300, 270));
 
-        txtJumlahHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        pengembalian.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        pengembalian.setText("UANG KEMBALI");
+        getContentPane().add(pengembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 590, -1, 20));
 
-        diskon.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        diskon.setText("DISKON");
-
-        txtDiskon.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtDiskon.addActionListener(new java.awt.event.ActionListener() {
+        txtPengembalian.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtPengembalian.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDiskonActionPerformed(evt);
+                txtPengembalianActionPerformed(evt);
             }
         });
-
-        txtHasilDiskon.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtHasilDiskon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtHasilDiskonActionPerformed(evt);
-            }
-        });
+        getContentPane().add(txtPengembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 590, 200, -1));
 
         hargaAkhir.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         hargaAkhir.setText("HARGA AKHIR");
+        getContentPane().add(hargaAkhir, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 620, -1, -1));
 
         hasilHargaAkhir.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        hasilHargaAkhir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hasilHargaAkhirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(hasilHargaAkhir, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 620, 200, -1));
 
         totalItem.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         totalItem.setText("TOTAL ITEM ");
+        getContentPane().add(totalItem, new org.netbeans.lib.awtextra.AbsoluteConstraints(54, 582, -1, -1));
 
         hasilTotalItem.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         hasilTotalItem.setText("0");
+        getContentPane().add(hasilTotalItem, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 582, 30, -1));
 
         member.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         member.setText("MEMBER 10%");
@@ -355,6 +530,7 @@ public class framePenjualan extends javax.swing.JFrame {
                 memberActionPerformed(evt);
             }
         });
+        getContentPane().add(member, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 590, 112, -1));
 
         hasilMember.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         hasilMember.addActionListener(new java.awt.event.ActionListener() {
@@ -362,100 +538,65 @@ public class framePenjualan extends javax.swing.JFrame {
                 hasilMemberActionPerformed(evt);
             }
         });
+        getContentPane().add(hasilMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 590, 200, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(totalItem)
-                        .addGap(18, 18, 18)
-                        .addComponent(hasilTotalItem, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(member, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(totalHarga)
-                            .addComponent(diskon)
-                            .addComponent(hargaAkhir))
-                        .addGap(62, 62, 62)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hasilHargaAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtJumlahHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(hasilMember, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtHasilDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(474, 474, 474))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(viewHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(258, 258, 258))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(viewHarga)
-                .addGap(26, 26, 26)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(totalHarga)
-                    .addComponent(txtJumlahHarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totalItem)
-                    .addComponent(hasilTotalItem))
-                .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(diskon)
-                    .addComponent(txtDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtHasilDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(member)
-                    .addComponent(hasilMember, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hargaAkhir)
-                    .addComponent(hasilHargaAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(122, Short.MAX_VALUE))
-        );
+        totalHarga.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        totalHarga.setText("TOTAL HARGA");
+        getContentPane().add(totalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 560, -1, -1));
+
+        txtTotalHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        getContentPane().add(txtTotalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 560, 200, -1));
+
+        pembayaran.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        pembayaran.setText("UANG PEMBAYARAN");
+        getContentPane().add(pembayaran, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 560, -1, 20));
+
+        inputPembayaran.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        getContentPane().add(inputPembayaran, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 560, 200, -1));
+
+        print.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        print.setText("PRINT");
+        print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printActionPerformed(evt);
+            }
+        });
+        getContentPane().add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 650, -1, -1));
+
+        reset.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        reset.setText("RESET");
+        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 650, -1, -1));
+
+        back.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        back.setText("BACK");
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
+        getContentPane().add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 650, -1, -1));
+
+        background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/pagePenjualan.png"))); // NOI18N
+        getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         setSize(new java.awt.Dimension(1314, 738));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void inputIDKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputIDKasirActionPerformed
+    private void inputIDPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputIDPegawaiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_inputIDKasirActionPerformed
+    }//GEN-LAST:event_inputIDPegawaiActionPerformed
 
-    private void txtTotalHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalHargaActionPerformed
+    private void txtJumlahHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtJumlahHargaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtTotalHargaActionPerformed
+    }//GEN-LAST:event_txtJumlahHargaActionPerformed
 
     private void inputIDMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputIDMemberActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inputIDMemberActionPerformed
 
-    private void txtDiskonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiskonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDiskonActionPerformed
-
-    private void txtHasilDiskonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHasilDiskonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtHasilDiskonActionPerformed
-
     private void inputQTYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputQTYActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:  
         if (inputQTY.getText().equals("")) {
             return;
         } else {
@@ -465,8 +606,8 @@ public class framePenjualan extends javax.swing.JFrame {
             obj [2] = txtNamaBarang.getText();
             obj [3] = txtHargaBarang.getText();
             obj [4] = inputQTY.getText();
-            obj [5] = txtDiskonBarang.getText();
-            obj [6] = txtTotalHarga.getText();
+            obj [5] = inputDiskonBarang.getText();
+            obj [6] = txtJumlahHarga.getText();
             
             model.addRow(obj);
             int baris = model.getRowCount();
@@ -476,16 +617,16 @@ public class framePenjualan extends javax.swing.JFrame {
             }
             
             tbPenjualan.setRowHeight(30);
-            totalItem.setText(String.valueOf(baris));
+            hasilTotalItem.setText(String.valueOf(baris));
             
             jmlTotalHarga();
             clear();
         }
     }//GEN-LAST:event_inputQTYActionPerformed
 
-    private void txtDiskonBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiskonBarangActionPerformed
+    private void inputDiskonBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputDiskonBarangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtDiskonBarangActionPerformed
+    }//GEN-LAST:event_inputDiskonBarangActionPerformed
 
     private void memberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_memberActionPerformed
         // TODO add your handling code here:
@@ -495,6 +636,45 @@ public class framePenjualan extends javax.swing.JFrame {
     private void hasilMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasilMemberActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_hasilMemberActionPerformed
+
+    private void hasilHargaAkhirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasilHargaAkhirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hasilHargaAkhirActionPerformed
+
+    private void txtNamaKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaKasirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNamaKasirActionPerformed
+
+    private void idPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idPenjualanActionPerformed
+        // TODO add your handling code here:
+        AtomicInteger counter = new AtomicInteger(0);
+        String formattedNumber = String.format("%05d", counter.incrementAndGet());
+        String id = "P" + formattedNumber;
+        idPenjualan.setText(id);
+    }//GEN-LAST:event_idPenjualanActionPerformed
+
+    private void txtPengembalianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPengembalianActionPerformed
+        // TODO add your handling code here:
+        try {
+            double hargaAkhir = Double.parseDouble(hasilHargaAkhir.getText());
+            double pembayaran = Double.parseDouble(inputPembayaran.getText());
+
+            double pengembalian = pembayaran - hargaAkhir;
+            txtPengembalian.setText(String.valueOf(pengembalian));
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Masukkan angka yang valid.");
+        }
+    }//GEN-LAST:event_txtPengembalianActionPerformed
+
+    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_printActionPerformed
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        frameMenuKasir.setVisible(true);
+    }//GEN-LAST:event_backActionPerformed
 
     /**
      * @param args the command line arguments
@@ -535,75 +715,50 @@ public class framePenjualan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel diskon;
+    private javax.swing.JButton back;
+    private javax.swing.JLabel background;
     private javax.swing.JLabel hargaAkhir;
     private javax.swing.JTextField hasilHargaAkhir;
     private javax.swing.JTextField hasilMember;
     private javax.swing.JLabel hasilTotalItem;
     private javax.swing.JLabel idBarang;
-    private javax.swing.JLabel idKasir;
     private javax.swing.JLabel idMember;
+    private javax.swing.JLabel idPegawai;
+    private javax.swing.JTextField idPenjualan;
+    private javax.swing.JTextField inputDiskonBarang;
     private javax.swing.JTextField inputIDBarang;
-    private javax.swing.JTextField inputIDKasir;
     private javax.swing.JTextField inputIDMember;
+    private javax.swing.JTextField inputIDPegawai;
+    private javax.swing.JTextField inputPembayaran;
     private javax.swing.JTextField inputQTY;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JCheckBox member;
+    private javax.swing.JLabel pembayaran;
+    private javax.swing.JLabel pengembalian;
+    private javax.swing.JButton print;
+    private javax.swing.JButton reset;
     private javax.swing.JTable tbPenjualan;
     private javax.swing.JLabel totalHarga;
     private javax.swing.JLabel totalItem;
     private javax.swing.JTextField txtAlamat;
-    private javax.swing.JTextField txtDiskon;
-    private javax.swing.JTextField txtDiskonBarang;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtHargaBarang;
-    private javax.swing.JTextField txtHasilDiskon;
     private javax.swing.JTextField txtJumlahHarga;
     private javax.swing.JTextField txtNamaBarang;
     private javax.swing.JTextField txtNamaKasir;
     private javax.swing.JTextField txtNamaMember;
     private javax.swing.JTextField txtNoHP;
+    private javax.swing.JTextField txtPengembalian;
     private javax.swing.JTextField txtTotalHarga;
     private javax.swing.JLabel viewHarga;
     // End of variables declaration//GEN-END:variables
-
-    private void jmlTotalHarga() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-          int subTotal = 0;
-          for (int a = 0; a < tbPenjualan.getRowCount(); a ++) {
-              subTotal += Integer.parseInt((String) tbPenjualan.getValueAt(a, 6).toString());
-          }
-          
-          txtJumlahHarga.setText(nf.format(subTotal));
-          
-          //DISKON
-          int diskon, hasilDiskon;
-          diskon = Integer.parseInt(txtJumlahHarga.getText().replace(".", "")) * Integer.parseInt(txtDiskon.getText().replace("", "")) / 100;
-          hasilDiskon = Integer.parseInt(txtJumlahHarga.getText().replace(".", "")) - diskon;
-          
-          //MEMBER
-          int hasil_Member = 0;
-          if (member.isSelected()) {
-              hasil_Member = hasilDiskon * 10 / 100;
-              hasilMember.setText(nf.format(hasil_Member));
-          } else {
-              hasil_Member = hasilDiskon * 0 / 100;
-              hasilMember.setText(nf.format(hasil_Member));
-          }
-          
-          //TOTAL HARGA
-          int totalAkhir;
-          totalAkhir = hasilDiskon - hasil_Member;
-          viewHarga.setText("Rp. " + nf.format(totalAkhir));
-    }
 
     private void clear() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         inputIDBarang.setText("");
         inputIDBarang.grabFocus();
         inputQTY.setText("");
-        txtDiskonBarang.setText("");
-        txtTotalHarga.setText("");
+        txtJumlahHarga.setText("");
     }
 }
