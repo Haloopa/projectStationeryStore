@@ -4,17 +4,54 @@
  */
 package userinterface;
 
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Asus
  */
 public class frameDataMember extends javax.swing.JFrame {
-
-    /**
-     * Creates new form frameDataMember
-     */
     public frameDataMember() {
         initComponents();
+        showData();
+    }
+    private void refreshForm(){
+        inputIdMember.setText(null);
+        inputNamaMember.setText(null);
+        inputNomorHpMember.setText(null);
+        inputEmailMember.setText(null);
+        inputAlamatMember.setText(null);
+    }
+    private void showData(){
+        DefaultTableModel table = new DefaultTableModel();
+        table.addColumn("ID Member");
+        table.addColumn("Nama Member");
+        table.addColumn("Nomor HP Member");
+        table.addColumn("Email Member");
+        table.addColumn("Alamat Member");
+        tabelDataMember.setModel(table);
+        
+        try {
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            Statement st = connect.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM datamember");
+
+            while (rs.next()) {
+                table.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)});
+                tabelDataMember.setModel(table);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }
 
     /**
@@ -30,7 +67,7 @@ public class frameDataMember extends javax.swing.JFrame {
         inputEmailMember = new javax.swing.JTextField();
         inputNomorHpMember = new javax.swing.JTextField();
         inputNamaMember = new javax.swing.JTextField();
-        inputIDMember = new javax.swing.JTextField();
+        inputIdMember = new javax.swing.JTextField();
         btnHapus = new javax.swing.JButton();
         btnUbah = new javax.swing.JButton();
         btnTambah = new javax.swing.JButton();
@@ -78,18 +115,23 @@ public class frameDataMember extends javax.swing.JFrame {
         });
         getContentPane().add(inputNamaMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 400, 30));
 
-        inputIDMember.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        inputIDMember.setBorder(null);
-        inputIDMember.addActionListener(new java.awt.event.ActionListener() {
+        inputIdMember.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        inputIdMember.setBorder(null);
+        inputIdMember.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inputIDMemberActionPerformed(evt);
+                inputIdMemberActionPerformed(evt);
             }
         });
-        getContentPane().add(inputIDMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 400, 30));
+        getContentPane().add(inputIdMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 400, 30));
 
         btnHapus.setBackground(java.awt.Color.lightGray);
         btnHapus.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 310, 110, 70));
 
         btnUbah.setBackground(java.awt.Color.lightGray);
@@ -105,6 +147,11 @@ public class frameDataMember extends javax.swing.JFrame {
         btnTambah.setBackground(java.awt.Color.lightGray);
         btnTambah.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnTambah.setText("Tambah");
+        btnTambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnTambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 240, 110, 70));
 
         btnBack.setBackground(java.awt.Color.gray);
@@ -139,6 +186,11 @@ public class frameDataMember extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tabelDataMember.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelDataMemberMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelDataMember);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 110, 670, 630));
@@ -150,9 +202,9 @@ public class frameDataMember extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void inputIDMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputIDMemberActionPerformed
+    private void inputIdMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputIdMemberActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_inputIDMemberActionPerformed
+    }//GEN-LAST:event_inputIdMemberActionPerformed
 
     private void inputNamaMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputNamaMemberActionPerformed
         // TODO add your handling code here:
@@ -167,19 +219,106 @@ public class frameDataMember extends javax.swing.JFrame {
     }//GEN-LAST:event_inputEmailMemberActionPerformed
 
     private void inputAlamatMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputAlamatMemberActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_inputAlamatMemberActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
+        try{
+            String sql = "UPDATE datamember SET idMember = '" + inputIdMember.getText()
+                    + "' , namaMember = '" + inputNamaMember.getText()
+                    + "' , nomorHpMember = '" + inputNomorHpMember.getText()
+                    + "' , emailMember = '" + inputEmailMember.getText()
+                    + "' , alamatMember = '" + inputAlamatMember.getText()
+                    + "' WHERE idMember = '" + inputIdMember.getText() + "'";
+            
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Member Berhasil Diubah!");
+            showData();
+            refreshForm();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        FrameLanding landing = new FrameLanding();
-        landing.setVisible(true);
+        frameMenuAdmin menu = new frameMenuAdmin();
+        menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+    String idMember = inputIdMember.getText();
+    int confirmDialog = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data member?", "Yes", JOptionPane.YES_NO_OPTION);
+    
+    if (confirmDialog == JOptionPane.YES_OPTION) {
+        try {
+            String sql = "DELETE FROM datamember WHERE idMember = ?";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, idMember);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Member Berhasil Dihapus!");
+            showData();
+            refreshForm();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        try {
+            String sql = "INSERT INTO datamember VALUES (?, ?, ?, ?, ?)";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            
+            ps.setString(1, inputIdMember.getText());
+            ps.setString(2, inputNamaMember.getText());
+            ps.setString(3, inputNomorHpMember.getText());
+            ps.setString(4, inputEmailMember.getText());
+            ps.setString(5, inputAlamatMember.getText());
+            
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Member Berhasil Ditambahkan!");
+            showData();
+            refreshForm();
+        }catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void tabelDataMemberMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelDataMemberMouseClicked
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+        int row = tabelDataMember.getSelectedRow();
+        String idMember = (String) tabelDataMember.getValueAt(row, 0);
+        inputIdMember.setText(idMember);
+
+        String namaMember = (String) tabelDataMember.getValueAt(row, 1);
+        inputNamaMember.setText(namaMember);
+
+        String nomorHpMember = (String) tabelDataMember.getValueAt(row, 2);
+        inputNomorHpMember.setText(nomorHpMember);
+
+        String emailMember = (String) tabelDataMember.getValueAt(row, 3);
+        inputEmailMember.setText(emailMember);
+        
+        String alamatMember = (String) tabelDataMember.getValueAt(row, 4);
+        inputAlamatMember.setText(alamatMember);
+       }//GEN-LAST:event_tabelDataMemberMouseClicked
 
     /**
      * @param args the command line arguments
@@ -224,7 +363,7 @@ public class frameDataMember extends javax.swing.JFrame {
     private javax.swing.JButton btnUbah;
     private javax.swing.JTextField inputAlamatMember;
     private javax.swing.JTextField inputEmailMember;
-    private javax.swing.JTextField inputIDMember;
+    private javax.swing.JTextField inputIdMember;
     private javax.swing.JTextField inputNamaMember;
     private javax.swing.JTextField inputNomorHpMember;
     private javax.swing.JScrollPane jScrollPane1;

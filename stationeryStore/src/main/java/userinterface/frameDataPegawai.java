@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class frameDataPegawai extends javax.swing.JFrame {
     public frameDataPegawai() {
         initComponents();
-                showData();
+        showData();
     }
     private void refreshForm(){
         inputIdPegawai.setText(null);
