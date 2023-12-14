@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Asus
  */
 public class frameDataMember extends javax.swing.JFrame {
+    private int lastMemberNumber = 0;
     public frameDataMember() {
         initComponents();
         showData();
@@ -30,7 +31,7 @@ public class frameDataMember extends javax.swing.JFrame {
         inputEmailMember.setText(null);
         inputAlamatMember.setText(null);
     }
-    private void showData(){
+    private void showData() {
         DefaultTableModel table = new DefaultTableModel();
         table.addColumn("ID Member");
         table.addColumn("Nama Member");
@@ -38,21 +39,34 @@ public class frameDataMember extends javax.swing.JFrame {
         table.addColumn("Email Member");
         table.addColumn("Alamat Member");
         tabelDataMember.setModel(table);
-        
+
         try {
             ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             Statement st = connect.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM datamember");
 
+            lastMemberNumber = 0;
+
             while (rs.next()) {
                 table.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)});
-                tabelDataMember.setModel(table);
+
+                String lastMemberId = rs.getString(1);
+                if (lastMemberId.startsWith("MB")) {
+                    try {
+                        int number = Integer.parseInt(lastMemberId.substring(2));
+                        if (number > lastMemberNumber) {
+                            lastMemberNumber = number;
+                        }
+                    } catch (NumberFormatException e) {
+                    }
+                }
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -273,22 +287,25 @@ public class frameDataMember extends javax.swing.JFrame {
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         try {
+            lastMemberNumber++;
+            String newMemberId = "MB" + String.format("%03d", lastMemberNumber);
+
             String sql = "INSERT INTO datamember VALUES (?, ?, ?, ?, ?)";
             ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             PreparedStatement ps = connect.prepareStatement(sql);
-            
-            ps.setString(1, inputIdMember.getText());
+
+            ps.setString(1, newMemberId);
             ps.setString(2, inputNamaMember.getText());
             ps.setString(3, inputNomorHpMember.getText());
             ps.setString(4, inputEmailMember.getText());
             ps.setString(5, inputAlamatMember.getText());
-            
+
             ps.execute();
             JOptionPane.showMessageDialog(null, "Data Member Berhasil Ditambahkan!");
             showData();
             refreshForm();
-        }catch (HeadlessException | SQLException e) {
+        } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_btnTambahActionPerformed
