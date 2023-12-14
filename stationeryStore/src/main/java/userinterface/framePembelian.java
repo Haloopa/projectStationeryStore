@@ -309,7 +309,7 @@ public class framePembelian extends javax.swing.JFrame {
         String tglSekarangId = sdfid.format(tglSekarang);
         String idPembelian = "PL"+tglSekarangId+urutan;
         
-        String query = "INSERT INTO pengembalian (tanggal, idPembelian, idPegawai, namaPegawai, namaDistributor, idBarang, namaBarang, isiPerBox, jumlahBeli, hargaBeli, subTotal) "
+        String query = "INSERT INTO pembelian (tanggal, idPembelian, idPegawai, namaPegawai, namaDistributor, idBarang, namaBarang, isiPerBox, jumlahBeli, hargaBeli, subTotal) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connect.prepareStatement(query)) {
             ps.setDate(1, new java.sql.Date(tglSekarang.getTime()));
@@ -351,7 +351,7 @@ public class framePembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         String idPegawai = inputIdAdmin.getText();
     String statusPegawai = "admin";
-    String query = "SELECT namaPegawai FROM datapegawai WHERE idPegawai = ? AND status = ?";
+    String query = "SELECT nama FROM datapegawai WHERE idPegawai = ? AND status = ?";
     String namaPegawai = null;
 
     try {
@@ -364,7 +364,7 @@ public class framePembelian extends javax.swing.JFrame {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    namaPegawai = resultSet.getString("namaPegawai");
+                    namaPegawai = resultSet.getString("nama");
                 }
             }
         }
@@ -392,7 +392,7 @@ public class framePembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         String idBarang = inputIdBarang.getText();
 
-    String query = "SELECT namaBarang FROM tabel_Barang WHERE idBarang = ?";
+    String query = "SELECT namaBarang FROM databarang WHERE idBarang = ?";
     String namaBarang = null;
 
     try {
@@ -413,7 +413,7 @@ public class framePembelian extends javax.swing.JFrame {
     }
 
     if (namaBarang != null) {
-        labelNamaAdmin.setText(namaBarang);
+        labelNamaBarang.setText(namaBarang);
         JOptionPane.showMessageDialog(this, "Nama Barang dengan ID " + idBarang + " ditemukan!");
     } else {
         JOptionPane.showMessageDialog(this, "Barang dengan ID " + idBarang +  " tidak ditemukan.");
