@@ -295,29 +295,50 @@ public class frameDataPegawai extends javax.swing.JFrame {
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         try {
+            String status = inputStatus.getSelectedItem().toString();
+            String prefix = (status.equals("Kasir")) ? "KS" : (status.equals("Admin")) ? "AD" : "";
+
+            String nextID = generateNextID(prefix);
+
             String sql = "INSERT INTO datapegawai VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             PreparedStatement ps = connect.prepareStatement(sql);
-            
-            ps.setString(1, inputIdPegawai.getText());
+
+            ps.setString(1, nextID);
             ps.setString(2, inputNamaPegawai.getText());
             ps.setString(3, inputNomorHpPegawai.getText());
             ps.setString(4, inputEmailPegawai.getText());
             ps.setString(5, inputAlamatPegawai.getText());
             ps.setString(6, inputGender.getSelectedItem().toString());
             ps.setString(7, inputPassword.getText());
-            ps.setString(8, inputStatus.getSelectedItem().toString());
-            
+            ps.setString(8, status);
+
             ps.execute();
             JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Ditambahkan!");
             showData();
             refreshForm();
-        }catch (HeadlessException | SQLException e) {
+        } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_btnTambahActionPerformed
+   
+    private String generateNextID(String prefix) throws SQLException {
+        String sql = "SELECT MAX(SUBSTRING(idPegawai, 3)) FROM datapegawai WHERE idPegawai LIKE ?";
+        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+        Connection connect = koneksidatabase.getConnection();
+        PreparedStatement ps = connect.prepareStatement(sql);
+        ps.setString(1, prefix + "%");
 
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int lastID = rs.getInt(1);
+
+        int nextID = lastID + 1;
+
+        return String.format("%s%03d", prefix, nextID);
+    }
+    
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
     String idPegawai = inputIdPegawai.getText();
     int confirmDialog = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data pegawai?", "Yes", JOptionPane.YES_NO_OPTION);
