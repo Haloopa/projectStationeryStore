@@ -4,19 +4,61 @@
  */
 package userinterface;
 
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Asus
  */
 public class frameDataBarang extends javax.swing.JFrame {
-
-    /**
-     * Creates new form frameDataBarang
-     */
     public frameDataBarang() {
         initComponents();
+        showData();
+    }
+        private void refreshForm(){
+        inputIdBarang.setText(null);
+        inputNamaBarang.setText(null);
+        inputKategori.setSelectedItem(null);
+        inputJumlahBarang.setText(null);
+        inputHargaBeli.setText(null);
+        inputHargaJual.setText(null);
+        inputNamaSupplier.setText(null);
     }
 
+    private void showData(){
+        DefaultTableModel table = new DefaultTableModel();
+        table.addColumn("ID Barang");
+        table.addColumn("Nama Barang");
+        table.addColumn("Kategori Barang");
+        table.addColumn("Jumlah Barang");
+        table.addColumn("Harga Beli");
+        table.addColumn("Harga Jual");
+        table.addColumn("Nama Supplier");
+        tabelDataBarang.setModel(table);
+        
+        try {
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            Statement st = connect.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM databarang");
+
+            while (rs.next()) {
+                table.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7)});
+                tabelDataBarang.setModel(table);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+            
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,7 +80,7 @@ public class frameDataBarang extends javax.swing.JFrame {
         btnUbah = new javax.swing.JButton();
         btnHapus = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabelDataMember = new javax.swing.JTable();
+        tabelDataBarang = new javax.swing.JTable();
         bgDataBarang = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -118,6 +160,11 @@ public class frameDataBarang extends javax.swing.JFrame {
         btnTambah.setBackground(java.awt.Color.lightGray);
         btnTambah.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnTambah.setText("Tambah");
+        btnTambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnTambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 220, 110, 70));
 
         btnUbah.setBackground(java.awt.Color.lightGray);
@@ -133,9 +180,14 @@ public class frameDataBarang extends javax.swing.JFrame {
         btnHapus.setBackground(java.awt.Color.lightGray);
         btnHapus.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 290, 110, 70));
 
-        tabelDataMember.setModel(new javax.swing.table.DefaultTableModel(
+        tabelDataBarang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -154,7 +206,12 @@ public class frameDataBarang extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tabelDataMember);
+        tabelDataBarang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelDataBarangMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelDataBarang);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 110, 670, 630));
 
@@ -196,8 +253,117 @@ public class frameDataBarang extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
+        try{
+            String sql = "UPDATE datapegawai SET idBarang = '" + inputIdBarang.getText()
+                    + "' , namaBarang = '" + inputNamaBarang.getText()
+                    + "' , kategoriBarang = '" + inputKategori.getSelectedItem()
+                    + "' , jumlahBarang = '" + inputJumlahBarang.getText()
+                    + "' , hargaBeli = '" + inputHargaBeli.getText()
+                    + "' , hargaJual = '" + inputHargaJual.getText()
+                    + "' , namaSupplier = '" + inputNamaSupplier.getText()
+                    + "' WHERE idBarang = '" + inputIdBarang.getText() + "'";
+            
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Barang Berhasil Diubah!");
+            showData();
+            refreshForm();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }//GEN-LAST:event_btnUbahActionPerformed
+
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        try {
+            String sql = "INSERT INTO databarang VALUES (?, ?, ?, ?, ?, ?, ?)";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+
+            String idBarang = inputIdBarang.getText();
+            String namaBarang = inputNamaBarang.getText();
+            String kategoriBarang = inputKategori.getSelectedItem().toString();
+            String jumlahBarang = inputJumlahBarang.getText();
+            String hargaBeli = inputHargaBeli.getText();
+            String namaSupplier = inputNamaSupplier.getText();
+
+            double hargaBeliPerBox = Double.parseDouble(hargaBeli);
+            int jumlahBarangPerPcs = Integer.parseInt(jumlahBarang);
+            double hargaJual = (hargaBeliPerBox / jumlahBarangPerPcs) * 1.2; 
+
+            ps.setString(1, idBarang);
+            ps.setString(2, namaBarang);
+            ps.setString(3, kategoriBarang);
+            ps.setString(4, jumlahBarang);
+            ps.setString(5, String.valueOf(hargaBeliPerBox)); 
+            ps.setString(6, String.valueOf(hargaJual)); 
+            ps.setString(7, namaSupplier);
+
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Data Barang Berhasil Ditambahkan!");
+            showData();
+            refreshForm();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+    String idBarang = inputIdBarang.getText();
+    int confirmDialog = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data barang?", "Yes", JOptionPane.YES_NO_OPTION);
+    
+    if (confirmDialog == JOptionPane.YES_OPTION) {
+        try {
+            String sql = "DELETE FROM databarang WHERE idBarang = ?";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, idBarang);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Barang Berhasil Dihapus!");
+            showData();
+            refreshForm();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void tabelDataBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelDataBarangMouseClicked
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+        int row = tabelDataBarang.getSelectedRow();
+        String idBarang = (String) tabelDataBarang.getValueAt(row, 0);
+        inputIdBarang.setText(idBarang);
+
+        String namaBarang = (String) tabelDataBarang.getValueAt(row, 1);
+        inputNamaBarang.setText(namaBarang);
+
+        String kategoriBarang = (String) tabelDataBarang.getValueAt(row, 2);
+        inputKategori.setSelectedItem(kategoriBarang);
+
+        String jumlahBarang = (String) tabelDataBarang.getValueAt(row, 3);
+        inputJumlahBarang.setText(jumlahBarang);
+        
+        String hargaBeli = (String) tabelDataBarang.getValueAt(row, 4);
+        inputHargaBeli.setText(hargaBeli);
+        
+        String hargaJual = (String) tabelDataBarang.getValueAt(row, 5);
+        inputHargaJual.setText(hargaJual);
+        
+        String namaSupplier = (String) tabelDataBarang.getValueAt(row, 6);
+        inputNamaSupplier.setText(namaSupplier);
+    }//GEN-LAST:event_tabelDataBarangMouseClicked
 
     /**
      * @param args the command line arguments
@@ -248,6 +414,6 @@ public class frameDataBarang extends javax.swing.JFrame {
     private javax.swing.JTextField inputNamaBarang;
     private javax.swing.JTextField inputNamaSupplier;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tabelDataMember;
+    private javax.swing.JTable tabelDataBarang;
     // End of variables declaration//GEN-END:variables
 }
