@@ -8,18 +8,14 @@ import com.mycompany.stationerystore.ConnectionDatabase;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javax.management.remote.JMXConnectorFactory.connect;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,21 +43,9 @@ public int finalTotal=0;
         });
         timer.start();
 
-        refreshTableData();
+//        refreshTableData();
     }
     
-//    private void tampilData() {
-//        DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
-//        Object rowData[] = new Object[6];
-//        rowData[0] = idBarang.getText();
-//        rowData[1] = namaBarang.getText();
-//        rowData[2] = hargaBarang.getText();
-//        rowData[3] = qty.getText();
-//        rowData[4] = discBarang.getText();
-//        rowData[5] = jmlHarga.getText();
-//        
-//        model.addRow(rowData);
-//    }
     
     private void refreshTableData() {
         try {
@@ -127,12 +111,8 @@ public int finalTotal=0;
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        date = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         txtIDPenjualan = new javax.swing.JLabel();
         idPenjualan = new javax.swing.JTextField();
-        time = new javax.swing.JLabel();
         txtIDPegawai = new javax.swing.JLabel();
         idPegawai = new javax.swing.JTextField();
         txtNamaPegawai = new javax.swing.JLabel();
@@ -173,7 +153,6 @@ public int finalTotal=0;
         save = new javax.swing.JButton();
         clear = new javax.swing.JButton();
         close = new javax.swing.JButton();
-        print = new javax.swing.JButton();
         member = new javax.swing.JCheckBox();
         bg = new javax.swing.JLabel();
 
@@ -183,16 +162,6 @@ public int finalTotal=0;
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1300, 731));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        date.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        date.setText("Date");
-        jPanel1.add(date, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 150, -1, -1));
-
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 150, -1, -1));
-
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 190, -1, -1));
 
         txtIDPenjualan.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtIDPenjualan.setText("ID Penjualan");
@@ -205,10 +174,6 @@ public int finalTotal=0;
             }
         });
         jPanel1.add(idPenjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 220, 130, 20));
-
-        time.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        time.setText("Time");
-        jPanel1.add(time, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 190, -1, -1));
 
         txtIDPegawai.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtIDPegawai.setText("ID Pegawai");
@@ -423,7 +388,7 @@ public int finalTotal=0;
                 saveActionPerformed(evt);
             }
         });
-        jPanel1.add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 500, -1, -1));
+        jPanel1.add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 520, -1, 20));
 
         clear.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         clear.setText("CLEAR");
@@ -432,7 +397,7 @@ public int finalTotal=0;
                 clearActionPerformed(evt);
             }
         });
-        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 620, -1, -1));
+        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 600, -1, 20));
 
         close.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         close.setText("CLOSE");
@@ -441,11 +406,7 @@ public int finalTotal=0;
                 closeActionPerformed(evt);
             }
         });
-        jPanel1.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 580, -1, -1));
-
-        print.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        print.setText("PRINT");
-        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 540, -1, -1));
+        jPanel1.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 560, -1, 20));
 
         member.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         member.setText("MEMBER 10%");
@@ -461,10 +422,12 @@ public int finalTotal=0;
 
     private void idPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idPenjualanActionPerformed
         // TODO add your handling code here:
-        AtomicInteger counter = new AtomicInteger(0);
-        String formattedNumber = String.format("%05d", counter.incrementAndGet());
+        AtomicInteger counter = new AtomicInteger(2);
+        String formattedNumber = String.format("%05d", counter.get());
         String id = "P" + formattedNumber;
         idPenjualan.setText(id);
+        
+//        prst.setString(1, idPenjualan.getText());
     }//GEN-LAST:event_idPenjualanActionPerformed
 
     private void namaPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaPegawaiActionPerformed
@@ -526,55 +489,40 @@ public int finalTotal=0;
 
     private void totalHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalHargaActionPerformed
         // TODO add your handling code here:
-//        double subTotal = 0;
-//        for (int a = 0; a < tabelPenjualan.getRowCount(); a++) {
-//            Object cellValue = tabelPenjualan.getValueAt(a, 5).toString(); 
-//            if (cellValue instanceof Double) {
-//                subTotal += (Double) cellValue;
-//            } else if (cellValue instanceof String) {
-//                String stringValue = (String) cellValue;
-//                if (!stringValue.isEmpty() && stringValue.matches("\\d+")) {
-//                    try {
-//                        double numericValue = Double.parseDouble(stringValue);
-//                        subTotal += numericValue;
-//                    } catch (NumberFormatException ex) {
-//                        ex.printStackTrace(); 
-//                    }
-//                }
-//            }
-//        }
-//
-//        totalHarga.setText(String.valueOf(subTotal));
-//        System.out.println(subTotal);
+        
+        DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
+int rowCount = model.getRowCount();
+double totalKolomKelima = 0;
 
-double subTotal = 0;
-for (int a = 1; a < tabelPenjualan.getRowCount(); a++) {
-//    Object cellValue = tabelPenjualan.getValueAt(a, 5); 
-      Object cellValue = tabelPenjualan.getValueAt(a, 5);
-System.out.println("Nilai dari cellValue: " + cellValue);
-    if (cellValue != null) {
-        if (cellValue instanceof Double) {
-            subTotal += (Double) cellValue;
-        } else if (cellValue instanceof String) {
-            String stringValue = (String) cellValue;
-            if (!stringValue.isEmpty() && stringValue.matches("\\d+(\\.\\d+)?")) {
-                try {
-                    double numericValue = Double.parseDouble(stringValue);
-                    subTotal += numericValue;
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace(); 
-                }
+for (int i = 0; i < rowCount; i++) {
+    Object value = model.getValueAt(i, 5); // Mengambil nilai dari kolom kelima (indeks 4)
+    if (value instanceof Double) {
+        totalKolomKelima += (Double) value;
+    } else if (value instanceof String) {
+        String stringValue = (String) value;
+        if (!stringValue.isEmpty() && stringValue.matches("\\d+(\\.\\d+)?")) {
+            try {
+                double numericValue = Double.parseDouble(stringValue);
+                totalKolomKelima += numericValue;
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
             }
         }
     }
 }
 
-totalHarga.setText(String.valueOf(subTotal));
-        hitungTotal();
+totalHarga.setText(String.valueOf(totalKolomKelima));
+System.out.println("Total kolom kelima: " + totalKolomKelima);
     }//GEN-LAST:event_totalHargaActionPerformed
 
     private void hargaAkhirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hargaAkhirActionPerformed
         // TODO add your handling code here:
+         double totalAkhir;
+            double th = Double.parseDouble(totalHarga.getText());
+            double hm = Double.parseDouble(discMember.getText());
+            totalAkhir = th - hm;
+            hargaAkhir.setText(String.valueOf(totalAkhir));
+           
     }//GEN-LAST:event_hargaAkhirActionPerformed
 
     private void bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bayarActionPerformed
@@ -710,97 +658,39 @@ totalHarga.setText(String.valueOf(subTotal));
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         // TODO add your handling code here:
-        try {
-            ConnectionDatabase koneksidatabase;
-            koneksidatabase = ConnectionDatabase.getInstance();
-            Connection connect = koneksidatabase.getConnection();
-            
-            double hrb = Double.parseDouble(hargaBarang.getText());
-            int qt = Integer.parseInt(qty.getText());
-            double dscb = Double.parseDouble(discBarang.getText());
+    try {
+    ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+    Connection connect = koneksidatabase.getConnection();
 
-            String ib = idBarang.getText();
-            String nb = namaBarang.getText();
-            String ip = idPenjualan.getText();
-            String idm = idMember.getText();
-            String idp = idPegawai.getText();
-            String np = namaPegawai.getText();
-            String ttlhrg = totalHarga.getText();
-            String dm = discMember.getText();
-            String jmlh = jmlHarga.getText();
-            String ha = hargaAkhir.getText();
-            
-            String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement prst = connect.prepareStatement(query)) {
-                
-                prst.setString(1, ip);
-                prst.setString(2, idm);
-                prst.setString(3, idp);
-                prst.setString(4, np);
-                prst.setString(5, ib);
-                prst.setString(6, nb);
-                prst.setDouble(7, hrb);
-                prst.setInt(8, qt);
-                prst.setDouble(9, dscb);
-                prst.setString(10, jmlh);
-                prst.setString(12, ttlhrg);
-                prst.setString(13, dm);
-                prst.setString(14, ha);
-            }
-            
-        
-            } catch (SQLException ex) {
-            Logger.getLogger(framePenjualan.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement prst = connect.prepareStatement(query)) {
+        prst.setString(1, idPenjualan.getText());
+        prst.setString(2, idMember.getText());
+        prst.setString(3, idPegawai.getText());
+        prst.setString(4, namaPegawai.getText());
+        prst.setString(5, idBarang.getText());
+        prst.setString(6, namaBarang.getText());
+        prst.setString(7, hargaBarang.getText());
+        prst.setString(8, qty.getText());
+        prst.setString(9, discBarang.getText());
+        prst.setString(10, jmlHarga.getText());
+        prst.setString(11, totalHarga.getText()); 
+        prst.setString(12, discMember.getText());   
+        prst.setString(13, hargaAkhir.getText());
         
         
-//         try {
-//        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
-//        Connection connect = koneksidatabase.getConnection();
-//
-//        double hrb = Double.parseDouble(hargaBarang.getText());
-//        int qt = Integer.parseInt(qty.getText());
-//        double dscb = Double.parseDouble(discBarang.getText());
-//
-//        String ib = idBarang.getText();
-//        String nb = namaBarang.getText();
-//        String ip = idPenjualan.getText();
-//        String idm = idMember.getText();
-//        String idp = idPegawai.getText();
-//        String np = namaPegawai.getText();
-//
-//        // Pastikan jmlHarga berisi angka yang valid sebelum mengonversi
-//        String jmlHargaText = jmlHarga.getText();
-//        double jmlh = 0.0;
-//        if (!jmlHargaText.isEmpty() && jmlHargaText.matches("\\d+(\\.\\d+)?")) {
-//            jmlh = Double.parseDouble(jmlHargaText);
-//        } else {
-//            // Tampilkan pesan atau lakukan penanganan kesalahan jika tidak valid
-//            System.out.println("Jumlah Harga tidak valid");
-//        }
-//
-//        String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga) "
-//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//
-//        try (PreparedStatement prst = connect.prepareStatement(query)) {
-//            prst.setString(1, ip);
-//            prst.setString(2, idm);
-//            prst.setString(3, idp);
-//            prst.setString(4, np);
-//            prst.setString(5, ib);
-//            prst.setString(6, nb);
-//            prst.setDouble(7, hrb);
-//            prst.setInt(8, qt);
-//            prst.setDouble(9, dscb);
-//            prst.setDouble(10, jmlh);
-//
-//            prst.executeUpdate(); // Eksekusi penyimpanan ke database
-//        }
-//    } catch (NumberFormatException | SQLException ex) {
-//        // Tangani kesalahan yang mungkin terjadi
-//        ex.printStackTrace();
-//    }
+        
+        int rowsAffected = prst.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Data telah berhasil dimasukkan ke dalam tabel penjualan.");
+        } else {
+            System.out.println("Gagal memasukkan data ke dalam tabel penjualan.");
+        }
+    }
+} catch (SQLException ex) {
+    ex.printStackTrace();
+}
     }//GEN-LAST:event_saveActionPerformed
 
     private void tabelPenjualanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelPenjualanMouseClicked
@@ -829,6 +719,7 @@ totalHarga.setText(String.valueOf(subTotal));
         
         String jmlh = (String) tabelPenjualan.getValueAt(row, 5);
         jmlHarga.setText(jmlh);
+        
     }//GEN-LAST:event_tabelPenjualanMouseClicked
 
     private void discMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discMemberActionPerformed
@@ -882,56 +773,13 @@ totalHarga.setText(String.valueOf(subTotal));
         }
 
 }
-        
-        
-        
-//       try {
-//        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
-//        Connection connect = koneksidatabase.getConnection();
-//
-//        double hrb = Double.parseDouble(hargaBarang.getText());
-//        int qt = Integer.parseInt(qty.getText());
-//        double dscb = Double.parseDouble(discBarang.getText());
-//
-//        String ib = idBarang.getText();
-//        String nb = namaBarang.getText();
-//        String ip = idPenjualan.getText();
-//        String idm = idMember.getText();
-//        String idp = idPegawai.getText();
-//        String np = namaPegawai.getText();
-//
-//        // Pastikan jmlHarga berisi angka yang valid sebelum mengonversi
-//        String jmlHargaText = jmlHarga.getText();
-//        double jmlh = 0.0;
-//        if (!jmlHargaText.isEmpty() && jmlHargaText.matches("\\d+(\\.\\d+)?")) {
-//            jmlh = Double.parseDouble(jmlHargaText);
-//        } else {
-//            // Tampilkan pesan atau lakukan penanganan kesalahan jika tidak valid
-//            System.out.println("Jumlah Harga tidak valid");
-//        }
-//
-//        String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga) "
-//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//
-//        try (PreparedStatement prst = connect.prepareStatement(query)) {
-//            prst.setString(1, ip);
-//            prst.setString(2, idm);
-//            prst.setString(3, idp);
-//            prst.setString(4, np);
-//            prst.setString(5, ib);
-//            prst.setString(6, nb);
-//            prst.setDouble(7, hrb);
-//            prst.setInt(8, qt);
-//            prst.setDouble(9, dscb);
-//            prst.setDouble(10, jmlh);
-//
-//            prst.executeUpdate(); // Eksekusi penyimpanan ke database
-//        }
-//    } catch (NumberFormatException | SQLException ex) {
-//        // Tangani kesalahan yang mungkin terjadi
-//        ex.printStackTrace();
-//    }
-        
+    idBarang.setText("");
+    namaBarang.setText("");
+    hargaBarang.setText("");
+    qty.setText("");
+    discBarang.setText("");
+    jmlHarga.setText("");
+    
     }//GEN-LAST:event_addActionPerformed
 
     private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
@@ -945,22 +793,6 @@ totalHarga.setText(String.valueOf(subTotal));
         // TODO add your handling code here:
         setVisible(false);
         new frameBill().setVisible(true);
-        
-//        idBarang.setText("");
-//        namaBarang.setText("");
-//        hargaBarang.setText("");
-//        qty.setText("");
-//        discBarang.setText("");
-//        jmlHarga.setText("");
-//        idMember.setText("");
-//        namaMember.setText("");
-//        noHP.setText("");
-//        email.setText("");
-//        totalHarga.setText("");
-//        discMember.setText("");
-//        hargaAkhir.setText("");
-//        bayar.setText("");
-//        kembali.setText("");
     }//GEN-LAST:event_clearActionPerformed
 
     /**
@@ -1004,7 +836,6 @@ totalHarga.setText(String.valueOf(subTotal));
     private javax.swing.JLabel bg;
     private javax.swing.JButton clear;
     private javax.swing.JButton close;
-    private javax.swing.JLabel date;
     private javax.swing.JTextField discBarang;
     private javax.swing.JTextField discMember;
     private javax.swing.JTextField email;
@@ -1014,8 +845,6 @@ totalHarga.setText(String.valueOf(subTotal));
     private javax.swing.JTextField idMember;
     private javax.swing.JTextField idPegawai;
     private javax.swing.JTextField idPenjualan;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -1026,11 +855,9 @@ totalHarga.setText(String.valueOf(subTotal));
     private javax.swing.JTextField namaMember;
     private javax.swing.JTextField namaPegawai;
     private javax.swing.JTextField noHP;
-    private javax.swing.JButton print;
     private javax.swing.JTextField qty;
     private javax.swing.JButton save;
     private javax.swing.JTable tabelPenjualan;
-    private javax.swing.JLabel time;
     private javax.swing.JTextField totalHarga;
     private javax.swing.JLabel txtBayar;
     private javax.swing.JLabel txtDiscBarang;

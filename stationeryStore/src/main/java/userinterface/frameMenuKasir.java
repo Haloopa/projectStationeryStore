@@ -28,9 +28,9 @@ public class frameMenuKasir extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         btnTransaksi = new javax.swing.JButton();
-        btnRiwayatTransaksi = new javax.swing.JButton();
         btnMember = new javax.swing.JButton();
         btnKeluar = new javax.swing.JButton();
+        btnRiwayat = new javax.swing.JButton();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -48,17 +48,6 @@ public class frameMenuKasir extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnTransaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 310, 310, 210));
-
-        btnRiwayatTransaksi.setBackground(new java.awt.Color(132, 179, 132));
-        btnRiwayatTransaksi.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
-        btnRiwayatTransaksi.setForeground(new java.awt.Color(0, 51, 51));
-        btnRiwayatTransaksi.setText("RIWAYAT TRANSAKSI");
-        btnRiwayatTransaksi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRiwayatTransaksiActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnRiwayatTransaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 310, 320, 210));
 
         btnMember.setBackground(new java.awt.Color(132, 179, 132));
         btnMember.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
@@ -83,6 +72,17 @@ public class frameMenuKasir extends javax.swing.JFrame {
         });
         jPanel1.add(btnKeluar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 550, 650, 80));
 
+        btnRiwayat.setBackground(new java.awt.Color(132, 179, 132));
+        btnRiwayat.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        btnRiwayat.setForeground(new java.awt.Color(0, 51, 51));
+        btnRiwayat.setText("RIWAYAT TRANSAKSI");
+        btnRiwayat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRiwayatActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnRiwayat, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 310, 320, 210));
+
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/menuKasir.png"))); // NOI18N
         jPanel1.add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -98,13 +98,9 @@ public class frameMenuKasir extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnKeluarActionPerformed
 
-    private void btnRiwayatTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRiwayatTransaksiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRiwayatTransaksiActionPerformed
-
     private void btnTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransaksiActionPerformed
         // TODO add your handling code here:
-        framePenjualan transaksi = new framePenjualan();
+        frameBill transaksi = new frameBill();
         transaksi.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnTransaksiActionPerformed
@@ -115,6 +111,13 @@ public class frameMenuKasir extends javax.swing.JFrame {
         dataMember.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnMemberActionPerformed
+
+    private void btnRiwayatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRiwayatActionPerformed
+        // TODO add your handling code here:
+        frameTransaksiJual riwayat = new frameTransaksiJual();
+        riwayat.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRiwayatActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,7 +158,7 @@ public class frameMenuKasir extends javax.swing.JFrame {
     private javax.swing.JLabel bg;
     private javax.swing.JButton btnKeluar;
     private javax.swing.JButton btnMember;
-    private javax.swing.JButton btnRiwayatTransaksi;
+    private javax.swing.JButton btnRiwayat;
     private javax.swing.JButton btnTransaksi;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

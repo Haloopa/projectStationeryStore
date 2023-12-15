@@ -127,6 +127,9 @@ public class frameMenuAdmin extends javax.swing.JFrame {
 
     private void btnRiwayatTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRiwayatTransaksiActionPerformed
         // TODO add your handling code here:
+        frameTransaksiJual riwayat = new frameTransaksiJual();
+        riwayat.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRiwayatTransaksiActionPerformed
 
     private void btnDataPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataPegawaiActionPerformed
