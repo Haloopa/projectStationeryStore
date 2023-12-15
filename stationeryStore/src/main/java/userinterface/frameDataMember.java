@@ -129,6 +129,8 @@ public class frameDataMember extends javax.swing.JFrame {
         });
         getContentPane().add(inputNamaMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 400, 30));
 
+        inputIdMember.setEditable(false);
+        inputIdMember.setBackground(new java.awt.Color(255, 255, 255));
         inputIdMember.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         inputIdMember.setBorder(null);
         inputIdMember.addActionListener(new java.awt.event.ActionListener() {
@@ -259,7 +261,7 @@ public class frameDataMember extends javax.swing.JFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        frameMenuAdmin menu = new frameMenuAdmin();
+        frameMenuKasir menu = new frameMenuKasir();
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed

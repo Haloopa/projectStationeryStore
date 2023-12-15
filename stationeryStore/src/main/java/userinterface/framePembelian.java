@@ -21,6 +21,10 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
+
+
+
+
 /**
  *
  * @author user
@@ -329,6 +333,7 @@ public class framePembelian extends javax.swing.JFrame {
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Data Pengembalian Berhasil ditambahkan!", "Pesan", JOptionPane.INFORMATION_MESSAGE);
                 urutan++;
+                labelIdPembelian.setText(idPembelian);
                 labelTotalHarga.setText(String.valueOf(total));
             } else {
                 JOptionPane.showMessageDialog(this, "Gagal menambahkan data ke tabel pengembalian", "Pesan", JOptionPane.INFORMATION_MESSAGE);
@@ -349,7 +354,7 @@ public class framePembelian extends javax.swing.JFrame {
 
     private void btnCariAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariAdminActionPerformed
         // TODO add your handling code here:
-        String idPegawai = inputIdAdmin.getText();
+    String idPegawai = inputIdAdmin.getText();
     String statusPegawai = "admin";
     String query = "SELECT namaPegawai FROM datapegawai WHERE idPegawai = ? AND status = ?";
     String namaPegawai = null;
@@ -465,7 +470,7 @@ public class framePembelian extends javax.swing.JFrame {
         
         java.sql.Date tanggalSql = (java.sql.Date) tabelPembelian.getValueAt(row, 1);
         
-        // Ubah java.sql.Date menjadi string dengan menggunakan SimpleDateFormat
+//        Ubah java.sql.Date menjadi string dengan menggunakan SimpleDateFormat
         String tanggal = new SimpleDateFormat("yyyy-MM-dd").format(tanggalSql);
         labelTanggal.setText(tanggal);
         
@@ -511,9 +516,9 @@ public class framePembelian extends javax.swing.JFrame {
             int jumlah = Integer.parseInt(inputJumlah.getText());
             int isi = Integer.parseInt(inputIsiPerBox.getText());
             int harga = Integer.parseInt(inputHargaPerBox.getText());
-            int total = isi*harga;
+            int total = jumlah*harga;
             
-        String query = "UPDATE penmbelian SET idPegawai = ?, namaPegawai = ?, namaDistributor = ?, idBarang = ?, namaBarang = ?, isiPerBox = ?, jumlahBeli = ?, hargaBeli = ?, subTotal = ? WHERE idPembelian = ?";
+    String query = "UPDATE pembelian SET idPegawai = ?, namaPegawai = ?, namaDistributor = ?, idBarang = ?, namaBarang = ?, isiPerBox = ?, jumlahBeli = ?, hargaBeli = ?, subTotal = ? WHERE idPembelian = ?";
         try (PreparedStatement st = connect.prepareStatement(query)) {
             st.setString(1, idPegawai);
             st.setString(2, namaAdmin);
