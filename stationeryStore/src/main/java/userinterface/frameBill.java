@@ -703,7 +703,15 @@ public class frameBill extends javax.swing.JFrame {
             String qt = qty.getText();
             String db = discBarang.getText();
             String jmlh = jmlHarga.getText();
-            
+            String ip = idPenjualan.getText();
+            String idm = idMember.getText();
+            String idp = idPegawai.getText();
+            String hrb = hargaBarang.getText();
+            String np = namaPegawai.getText();
+            String dscb = discBarang.getText();
+            String ttlhrg = totalHarga.getText();
+            String dm = discMember.getText();
+            String ha = hargaAkhir.getText();
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String tanggal = null;
@@ -721,22 +729,22 @@ public class frameBill extends javax.swing.JFrame {
             String idPembelian = "PL"+tglSekarangId+urutan;
             
             String query = "INSERT INTO penjualan (tanggal, idPenjualan, idMember, idPegawai, nama, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement prst = connect.prepareStatement(query)) {
                 prst.setDate(1, new java.sql.Date(tglSekarang.getTime()));
-                prst.setString(2, idPenjualan);
-                prst.setString(3, idMember);
-                prst.setString(4, idPegawai);
-                prst.setString(5, nama);
-                prst.setString(6, idBarang);
-                prst.setString(7, namaBarang);
-                prst.setString(8, hargaJual);
-                prst.setInt(9, jumlahBarang);
-                prst.setString(10, discBarang);
-//                prst.setString(11, jumlahHarga);
-//                prst.setString(11, totalHarga);
-//                prst.setString(11, discMember);
-//                prst.setString(11, hargaAkhir);
+                prst.setString(2, ip);
+                prst.setString(3, idm);
+                prst.setString(4, idp);
+                prst.setString(5, np);
+                prst.setString(6, ib);
+                prst.setString(7, nb);
+                prst.setString(8, hrb);
+                prst.setString(9, qt);
+                prst.setString(10, dscb);
+                prst.setString(11, jmlh);
+                prst.setString(12, ttlhrg);
+                prst.setString(13, dm);
+                prst.setString(14, ha);
             }
             
             DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
@@ -744,8 +752,6 @@ public class frameBill extends javax.swing.JFrame {
         
             } catch (SQLException ex) {
             Logger.getLogger(framePenjualan.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
-            Logger.getLogger(framePembelian.class.getName()).log(Level.SEVERE, null, ex);
             }
         
         
