@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package userinterface;
+import com.mycompany.stationerystore.ConnectionDatabase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,6 +34,7 @@ public class framePenjualan extends javax.swing.JFrame {
     NumberFormat nf = NumberFormat.getNumberInstance(new Locale("in", "ID"));
     public framePenjualan() {
         initComponents();
+        SimpleDateFormat.dFormat
         IDBarang();
         Total();
         FinalHarga();
@@ -142,23 +144,47 @@ public class framePenjualan extends javax.swing.JFrame {
     private void jmlTotalHarga() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
           int subTotal = 0;
-          for (int a = 0; a < tbPenjualan.getRowCount(); a ++) {
-              subTotal += Integer.parseInt((String) tbPenjualan.getValueAt(a, 6).toString());
-          }
-          
-          txtTotalHarga.setText(nf.format(subTotal));
+        for (int a = 0; a < tbPenjualan.getRowCount(); a++) {
+            String cellValue = tbPenjualan.getValueAt(a, 6).toString();
+            if (!cellValue.isEmpty()) {
+                try {
+                    subTotal += Integer.parseInt(cellValue);
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace(); 
+                }
+            }
+    }
+    txtTotalHarga.setText(nf.format(subTotal));
     }
     
     private void applyDiskonMember() {
-        double hasil = Double.parseDouble(txtTotalHarga.getText());
-        double dm = hasil * 0.1;
-        hasilMember.setText(String.valueOf(dm));
+      String inputText = txtTotalHarga.getText();
+      if (!inputText.isEmpty()) {
+        try {
+            double hasil = Double.parseDouble(inputText);
+            double dm = hasil * 0.1;
+            hasilMember.setText(String.valueOf(dm));
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace(); 
+            }
+        } else {
+            
+        }
     }
     
     private void removeDiskonMember() {
-        double hasil = Double.parseDouble(txtTotalHarga.getText());
-        double dm = hasil * 0;
-        hasilMember.setText(String.valueOf(dm));
+        String inputText = txtTotalHarga.getText();
+        if (!inputText.isEmpty()) {
+            try {
+                double hasil = Double.parseDouble(inputText);
+                double dm = hasil * 0;
+                hasilMember.setText(String.valueOf(dm));
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+
+        }
     }
     
     private void IDBarang() {
@@ -244,15 +270,20 @@ public class framePenjualan extends javax.swing.JFrame {
 //                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                   try {
                       int hasil = 0; 
-                      if (inputQTY.getText().equals("")) {
-                          hasil = (int) (Double.parseDouble(txtHargaBarang.getText().replace(".", "")) * 0);
-                      } else {
-                            hasil = (int) (Double.parseDouble(txtHargaBarang.getText().replace(".", "")) * Integer.parseInt(inputQTY.getText()) * Double.parseDouble(inputDiskonBarang.getText()));
+                      String qtyText = inputQTY.getText();
+                      String hargaBarang = txtHargaBarang.getText().replace(".", "");
+                      String diskonBarang = inputDiskonBarang.getText();
+                              
+                      if (!qtyText.isEmpty() && diskonBarang.matches("\\d+(\\.\\d+)?")) {
+                        hasil = (int) (Integer.parseInt(qtyText) * Integer.parseInt(hargaBarang) * Double.parseDouble(diskonBarang));
                       }
-                      txtJumlahHarga.setText(nf.format(hasil));
-                  } catch (NumberFormatException e) {
-                      
-                  }
+                
+                     txtJumlahHarga.setText(nf.format(hasil));
+                
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace(); // Tangani jika input bukan angka atau string kosong
+                    }
+             
             }
 
             @Override
@@ -313,6 +344,7 @@ public class framePenjualan extends javax.swing.JFrame {
         print = new javax.swing.JButton();
         reset = new javax.swing.JButton();
         back = new javax.swing.JButton();
+        add = new javax.swing.JButton();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -545,6 +577,11 @@ public class framePenjualan extends javax.swing.JFrame {
         getContentPane().add(totalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 560, -1, -1));
 
         txtTotalHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtTotalHarga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalHargaActionPerformed(evt);
+            }
+        });
         getContentPane().add(txtTotalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 560, 200, -1));
 
         pembayaran.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
@@ -552,6 +589,11 @@ public class framePenjualan extends javax.swing.JFrame {
         getContentPane().add(pembayaran, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 560, -1, 20));
 
         inputPembayaran.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        inputPembayaran.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputPembayaranActionPerformed(evt);
+            }
+        });
         getContentPane().add(inputPembayaran, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 560, 200, -1));
 
         print.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
@@ -576,6 +618,15 @@ public class framePenjualan extends javax.swing.JFrame {
         });
         getContentPane().add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 650, -1, -1));
 
+        add.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        add.setText("ADD");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+        getContentPane().add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 650, -1, -1));
+
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/pagePenjualan.png"))); // NOI18N
         getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -597,8 +648,8 @@ public class framePenjualan extends javax.swing.JFrame {
 
     private void inputQTYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputQTYActionPerformed
         // TODO add your handling code here:  
-        if (inputQTY.getText().equals("")) {
-            return;
+        if (inputQTY.getText().isEmpty()) {
+        return;
         } else {
             DefaultTableModel model = (DefaultTableModel) tbPenjualan.getModel();
             Object obj [] = new Object[7];
@@ -608,17 +659,17 @@ public class framePenjualan extends javax.swing.JFrame {
             obj [4] = inputQTY.getText();
             obj [5] = inputDiskonBarang.getText();
             obj [6] = txtJumlahHarga.getText();
-            
+
             model.addRow(obj);
             int baris = model.getRowCount();
             for (int a = 0; a < baris; a ++) {
                 String no = String.valueOf(a + 1);
                 model.setValueAt(no + ".", a, 0);
             }
-            
+
             tbPenjualan.setRowHeight(30);
             hasilTotalItem.setText(String.valueOf(baris));
-            
+
             jmlTotalHarga();
             clear();
         }
@@ -656,11 +707,18 @@ public class framePenjualan extends javax.swing.JFrame {
     private void txtPengembalianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPengembalianActionPerformed
         // TODO add your handling code here:
         try {
-            double hargaAkhir = Double.parseDouble(hasilHargaAkhir.getText());
-            double pembayaran = Double.parseDouble(inputPembayaran.getText());
+            String textHargaAkhir = hasilHargaAkhir.getText();
+            String textPembayaran = inputPembayaran.getText();
 
-            double pengembalian = pembayaran - hargaAkhir;
-            txtPengembalian.setText(String.valueOf(pengembalian));
+            if (!textHargaAkhir.isEmpty() && !textPembayaran.isEmpty()) {
+                double hargaAkhir = Double.parseDouble(textHargaAkhir);
+                double pembayaran = Double.parseDouble(textPembayaran);
+
+                double pengembalian = pembayaran - hargaAkhir;
+                txtPengembalian.setText(String.valueOf(pengembalian));
+            } else {
+                JOptionPane.showMessageDialog(this, "Masukkan harga akhir dan pembayaran.");
+            }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Masukkan angka yang valid.");
         }
@@ -675,6 +733,32 @@ public class framePenjualan extends javax.swing.JFrame {
         this.dispose();
         frameMenuKasir.setVisible(true);
     }//GEN-LAST:event_backActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        String id = idPenjualan.getText();
+        try {
+            ConnectionDatabase konek = new ConnectionDatabase();
+        Connection koneksi = konek.getConnection();
+        
+        String query = "INSER INTO (idPenjualan) VALUES (?)";
+        PreparedStatement ps = koneksi.prepareStatement(query);
+        
+        ps.setString(1, id);
+        ps.executeUpdate();
+        
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_addActionPerformed
+
+    private void txtTotalHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalHargaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalHargaActionPerformed
+
+    private void inputPembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputPembayaranActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputPembayaranActionPerformed
 
     /**
      * @param args the command line arguments
@@ -715,6 +799,7 @@ public class framePenjualan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add;
     private javax.swing.JButton back;
     private javax.swing.JLabel background;
     private javax.swing.JLabel hargaAkhir;

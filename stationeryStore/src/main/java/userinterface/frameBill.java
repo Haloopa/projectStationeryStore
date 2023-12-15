@@ -3,7 +3,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package userinterface;
-
+import java.sql.*;
+import com.mycompany.stationerystore.ConnectionDatabase;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static javax.management.remote.JMXConnectorFactory.connect;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author acer
@@ -13,8 +36,55 @@ public class frameBill extends javax.swing.JFrame {
     /**
      * Creates new form frameBill
      */
+    private DefaultTableModel tableModel;
+    private int urutan = 1;
     public frameBill() {
         initComponents();
+        
+        tableModel = (DefaultTableModel) tabelPenjualan.getModel();
+
+       
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshTableData();
+            }
+        });
+        timer.start();
+
+        refreshTableData();
+    }
+    
+    
+    private void refreshTableData() {
+        try {
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+
+            // Mengambil data dari database
+            String query = "SELECT * FROM penjualan";
+            try (PreparedStatement statement = connect.prepareStatement(query);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                // Clear existing data
+                tableModel.setRowCount(0);
+
+                // Populate data from the result set
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                // tambah baris
+                while (resultSet.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = resultSet.getObject(i);
+                    }
+                    tableModel.addRow(row);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -27,26 +97,659 @@ public class frameBill extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        date = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtIDPenjualan = new javax.swing.JLabel();
+        idPenjualan = new javax.swing.JTextField();
+        time = new javax.swing.JLabel();
+        txtIDPegawai = new javax.swing.JLabel();
+        idPegawai = new javax.swing.JTextField();
+        txtNamaPegawai = new javax.swing.JLabel();
+        namaPegawai = new javax.swing.JTextField();
+        txtIDMember = new javax.swing.JLabel();
+        idMember = new javax.swing.JTextField();
+        txtNamaMember = new javax.swing.JLabel();
+        namaMember = new javax.swing.JTextField();
+        txtNoHP = new javax.swing.JLabel();
+        noHP = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JLabel();
+        email = new javax.swing.JTextField();
+        txtIDBarang = new javax.swing.JLabel();
+        idBarang = new javax.swing.JTextField();
+        txtNamaBarang = new javax.swing.JLabel();
+        namaBarang = new javax.swing.JTextField();
+        txtHargaBarang = new javax.swing.JLabel();
+        hargaBarang = new javax.swing.JTextField();
+        txtQTY = new javax.swing.JLabel();
+        qty = new javax.swing.JTextField();
+        txtDiscBarang = new javax.swing.JLabel();
+        discBarang = new javax.swing.JTextField();
+        txtJmlHarga = new javax.swing.JLabel();
+        jmlHarga = new javax.swing.JTextField();
+        add = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        billing = new javax.swing.JTextArea();
+        tabelPenjualan = new javax.swing.JTable();
+        txtTotalHarga = new javax.swing.JLabel();
+        totalHarga = new javax.swing.JTextField();
+        txtHargaFinal = new javax.swing.JLabel();
+        discMember = new javax.swing.JTextField();
+        hargaAkhir = new javax.swing.JTextField();
+        txtBayar = new javax.swing.JLabel();
+        txtKembali = new javax.swing.JLabel();
+        bayar = new javax.swing.JTextField();
+        kembali = new javax.swing.JTextField();
+        save = new javax.swing.JButton();
+        clear = new javax.swing.JButton();
+        close = new javax.swing.JButton();
+        print = new javax.swing.JButton();
+        member = new javax.swing.JCheckBox();
+        bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setPreferredSize(new java.awt.Dimension(442, 517));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1300, 731));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        billing.setColumns(20);
-        billing.setRows(5);
-        jScrollPane1.setViewportView(billing);
+        date.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        date.setText("Date");
+        jPanel1.add(date, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 150, -1, -1));
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 440, 510));
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 150, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 440, 520));
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 190, -1, -1));
+
+        txtIDPenjualan.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIDPenjualan.setText("ID Penjualan");
+        jPanel1.add(txtIDPenjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
+
+        idPenjualan.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idPenjualanActionPerformed(evt);
+            }
+        });
+        jPanel1.add(idPenjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 220, 130, 20));
+
+        time.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        time.setText("Time");
+        jPanel1.add(time, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 190, -1, -1));
+
+        txtIDPegawai.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIDPegawai.setText("ID Pegawai");
+        jPanel1.add(txtIDPegawai, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 220, -1, -1));
+
+        idPegawai.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idPegawai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idPegawaiActionPerformed(evt);
+            }
+        });
+        jPanel1.add(idPegawai, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 130, -1));
+
+        txtNamaPegawai.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtNamaPegawai.setText("Nama Pegawai");
+        jPanel1.add(txtNamaPegawai, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 220, -1, -1));
+
+        namaPegawai.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        namaPegawai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                namaPegawaiActionPerformed(evt);
+            }
+        });
+        jPanel1.add(namaPegawai, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 220, 130, -1));
+
+        txtIDMember.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIDMember.setText("ID Member");
+        jPanel1.add(txtIDMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, -1, -1));
+
+        idMember.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idMemberActionPerformed(evt);
+            }
+        });
+        jPanel1.add(idMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 270, 130, -1));
+
+        txtNamaMember.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtNamaMember.setText("Nama Member");
+        jPanel1.add(txtNamaMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 270, -1, -1));
+
+        namaMember.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jPanel1.add(namaMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 270, 130, -1));
+
+        txtNoHP.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtNoHP.setText("Nomor HP");
+        jPanel1.add(txtNoHP, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 270, -1, -1));
+
+        noHP.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jPanel1.add(noHP, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 270, 130, -1));
+
+        txtEmail.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtEmail.setText("Email");
+        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 270, -1, -1));
+
+        email.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jPanel1.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 270, 130, -1));
+
+        txtIDBarang.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIDBarang.setText("ID Barang");
+        jPanel1.add(txtIDBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, -1, -1));
+
+        idBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        idBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idBarangActionPerformed(evt);
+            }
+        });
+        jPanel1.add(idBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 320, 130, -1));
+
+        txtNamaBarang.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtNamaBarang.setText("Nama Barang");
+        jPanel1.add(txtNamaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 320, -1, -1));
+
+        namaBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jPanel1.add(namaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 320, 130, -1));
+
+        txtHargaBarang.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtHargaBarang.setText("Harga Barang");
+        jPanel1.add(txtHargaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 320, -1, -1));
+
+        hargaBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jPanel1.add(hargaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 320, 130, -1));
+
+        txtQTY.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtQTY.setText("QTY");
+        jPanel1.add(txtQTY, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 320, -1, -1));
+
+        qty.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        qty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qtyActionPerformed(evt);
+            }
+        });
+        jPanel1.add(qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 320, 40, -1));
+
+        txtDiscBarang.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtDiscBarang.setText("Diskon");
+        jPanel1.add(txtDiscBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 320, -1, -1));
+
+        discBarang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        discBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                discBarangActionPerformed(evt);
+            }
+        });
+        jPanel1.add(discBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 320, 40, -1));
+
+        txtJmlHarga.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtJmlHarga.setText("Jumlah Harga");
+        jPanel1.add(txtJmlHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 320, -1, -1));
+
+        jmlHarga.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jmlHarga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmlHargaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jmlHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(1150, 320, 130, -1));
+
+        add.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        add.setText("ADD");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 380, -1, -1));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 1300, 10));
+
+        tabelPenjualan.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        tabelPenjualan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID Barang", "Nama Barang", "Harga Barang", "QTY", "Diskon", "Jumlah Harga"
+            }
+        ));
+        tabelPenjualan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelPenjualanMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelPenjualan);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 420, 640, 310));
+
+        txtTotalHarga.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtTotalHarga.setText("TOTAL HARGA");
+        jPanel1.add(txtTotalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 480, -1, -1));
+
+        totalHarga.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        totalHarga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                totalHargaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(totalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 480, 120, -1));
+
+        txtHargaFinal.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtHargaFinal.setText("HARGA AKHIR");
+        jPanel1.add(txtHargaFinal, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 560, -1, -1));
+
+        discMember.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        discMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                discMemberActionPerformed(evt);
+            }
+        });
+        jPanel1.add(discMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 520, 120, -1));
+
+        hargaAkhir.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        hargaAkhir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hargaAkhirActionPerformed(evt);
+            }
+        });
+        jPanel1.add(hargaAkhir, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 560, 120, -1));
+
+        txtBayar.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtBayar.setText("BAYAR");
+        jPanel1.add(txtBayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 600, -1, -1));
+
+        txtKembali.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtKembali.setText("KEMBALI");
+        jPanel1.add(txtKembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 640, -1, -1));
+
+        bayar.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        bayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bayarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 600, 120, -1));
+
+        kembali.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        kembali.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                kembaliActionPerformed(evt);
+            }
+        });
+        jPanel1.add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 640, 120, -1));
+
+        save.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        save.setText("SAVE");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 500, -1, -1));
+
+        clear.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        clear.setText("CLEAR");
+        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 620, -1, -1));
+
+        close.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        close.setText("CLOSE");
+        jPanel1.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 580, -1, -1));
+
+        print.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        print.setText("PRINT");
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 540, -1, -1));
+
+        member.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        member.setText("MEMBER 10%");
+        jPanel1.add(member, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 520, -1, -1));
+
+        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/pagePenjualan.png"))); // NOI18N
+        jPanel1.add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 730));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void idPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idPenjualanActionPerformed
+        // TODO add your handling code here:
+        AtomicInteger counter = new AtomicInteger(0);
+        String formattedNumber = String.format("%05d", counter.incrementAndGet());
+        String id = "P" + formattedNumber;
+        idPenjualan.setText(id);
+    }//GEN-LAST:event_idPenjualanActionPerformed
+
+    private void namaPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaPegawaiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_namaPegawaiActionPerformed
+
+    private void idPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idPegawaiActionPerformed
+        // TODO add your handling code here:
+       String idp = idPegawai.getText();
+       PreparedStatement ppst = null;
+       ResultSet rslt = null;
+
+        try {
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+
+            ppst = connect.prepareStatement("SELECT namaPegawai FROM datapegawai WHERE idPegawai = ?");
+            ppst.setString(1, idp);
+            rslt = ppst.executeQuery();
+
+            if (rslt.next()) {
+                namaPegawai.setText(rslt.getString(1));
+            } else {
+                idPegawai.setText("");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rslt != null) rslt.close();
+                if (ppst != null) ppst.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_idPegawaiActionPerformed
+
+    private void jmlHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmlHargaActionPerformed
+        // TODO add your handling code here:
+        try {
+            double harga = 0.0;
+            double diskon = 0.0;
+
+            if (!hargaBarang.getText().isEmpty()) {
+                harga = Double.valueOf(hargaBarang.getText());
+            }
+
+            if (!discBarang.getText().isEmpty()) {
+                diskon = Double.valueOf(discBarang.getText()) / 100.0;
+            }
+
+            int q = Integer.valueOf(qty.getText());
+            double total = harga * q - (harga * q * diskon);
+            jmlHarga.setText(String.valueOf(total));
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jmlHargaActionPerformed
+
+    private void totalHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalHargaActionPerformed
+        // TODO add your handling code here:
+        int subTotal = 0;
+        for (int a = 0; a < tabelPenjualan.getRowCount(); a++) {
+            Object cellValue = tabelPenjualan.getValueAt(a, 5); 
+            if (cellValue instanceof Integer) {
+                subTotal += (Integer) cellValue;
+            } else if (cellValue instanceof String) {
+                String stringValue = (String) cellValue;
+                if (!stringValue.isEmpty()) {
+                    try {
+                        int numericValue = Integer.parseInt(stringValue);
+                        subTotal += numericValue;
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace(); 
+                        
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_totalHargaActionPerformed
+
+    private void hargaAkhirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hargaAkhirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hargaAkhirActionPerformed
+
+    private void bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bayarActionPerformed
+
+    private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
+        // TODO add your handling code here:
+       try {
+        String textHargaAkhir = hargaAkhir.getText();
+        String textPembayaran = bayar.getText();
+
+        if (!textHargaAkhir.isEmpty() && !textPembayaran.isEmpty()) {
+            double ha = Double.parseDouble(textHargaAkhir);
+            double pembayaran = Double.parseDouble(textPembayaran);
+
+            double pengembalian = pembayaran - ha;
+            kembali.setText(String.valueOf(pengembalian));
+        } else {
+            JOptionPane.showMessageDialog(this, "Masukkan harga akhir dan pembayaran.");
+        }
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Masukkan angka yang valid.");
+    }
+    }//GEN-LAST:event_kembaliActionPerformed
+
+    private void idMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idMemberActionPerformed
+        // TODO add your handling code here:
+        String idm = idMember.getText();
+        PreparedStatement ppst = null;
+        ResultSet rslt = null;
+
+         try {
+             ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+             Connection connect = koneksidatabase.getConnection();
+
+             ppst = connect.prepareStatement("SELECT namaMember, nomorHpMember, emailMember FROM datamember WHERE idMember = ?");
+             ppst.setString(1, idm);
+             rslt = ppst.executeQuery();
+
+             if (rslt.next()) {
+                 namaMember.setText(rslt.getString("namaMember"));
+                 noHP.setText(rslt.getString("nomorHpMember"));
+                 email.setText(rslt.getString("emailMember"));
+                 
+                 member.setSelected(true);
+                 applyDiskonMember();
+             } else {
+                 idMember.setText("");
+                 
+                 member.setSelected(false);
+                 removeDiskonMember();
+             }
+         } catch (SQLException ex) {
+             ex.printStackTrace();
+         } finally {
+             try {
+                 if (rslt != null) rslt.close();
+                 if (ppst != null) ppst.close();
+             } catch (SQLException ex) {
+                 ex.printStackTrace();
+             }
+         }
+    }//GEN-LAST:event_idMemberActionPerformed
+
+    private void idBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idBarangActionPerformed
+        // TODO add your handling code here:
+        String idb = idBarang.getText();
+        PreparedStatement ppst = null;
+        ResultSet rslt = null;
+
+         try {
+             ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+             Connection connect = koneksidatabase.getConnection();
+
+             ppst = connect.prepareStatement("SELECT namaBarang, hargaJual FROM databarang WHERE idBarang = ?");
+             ppst.setString(1, idb);
+             rslt = ppst.executeQuery();
+
+             if (rslt.next()) {
+                 namaBarang.setText(rslt.getString("namaBarang"));
+                 hargaBarang.setText(rslt.getString("hargaJual"));
+             } else {
+                 idBarang.setText("");
+             }
+         } catch (SQLException ex) {
+             ex.printStackTrace();
+         } finally {
+             try {
+                 if (rslt != null) rslt.close();
+                 if (ppst != null) ppst.close();
+             } catch (SQLException ex) {
+                 ex.printStackTrace();
+             }
+         }
+    }//GEN-LAST:event_idBarangActionPerformed
+
+    private void qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyActionPerformed
+        // TODO add your handling code here:
+//        public void actionPerformed(ActionEvent e) {
+                try {
+                    double harga = 0.0;
+                    double diskon = 0.0;
+
+                    if (!hargaBarang.getText().isEmpty()) {
+                        harga = Double.valueOf(hargaBarang.getText());
+                    }
+
+                    if (!discBarang.getText().isEmpty()) {
+                        int diskonPersen = Integer.valueOf(discBarang.getText());
+                        diskon = diskonPersen / 100.0;
+                    }
+
+                    int q = Integer.parseInt(qty.getText());
+                    double total = harga * q - (harga * q * diskon);
+                    jmlHarga.setText(String.valueOf(total));
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+//        }
+    }//GEN-LAST:event_qtyActionPerformed
+
+    private void discBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discBarangActionPerformed
+        // TODO add your handling code here:
+       try {
+            int diskonPersen = Integer.parseInt(discBarang.getText());
+            double diskon = diskonPersen / 100.0;
+            discBarang.setText(String.valueOf(diskon));
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_discBarangActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void tabelPenjualanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelPenjualanMouseClicked
+        // TODO add your handling code here:
+        int row = tabelPenjualan.getSelectedRow();
+        
+        if (row == -1){
+            return;
+        
+        }
+        
+        String ib = (String) tabelPenjualan.getValueAt(row, 0);
+        idBarang.setText(ib);
+        
+        String nb = (String) tabelPenjualan.getValueAt(row, 1);
+        namaBarang.setText(nb);
+        
+        String hb = (String) tabelPenjualan.getValueAt(row, 2);
+        hargaBarang.setText(hb);
+        
+        String qt = (String) tabelPenjualan.getValueAt(row, 3);
+        qty.setText(qt);
+        
+        String db = (String) tabelPenjualan.getValueAt(row, 4);
+        discBarang.setText(db);
+        
+        String jmlh = (String) tabelPenjualan.getValueAt(row, 5);
+        jmlHarga.setText(jmlh);
+    }//GEN-LAST:event_tabelPenjualanMouseClicked
+
+    private void discMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discMemberActionPerformed
+        // TODO add your handling code here:
+//        String inputText = totalHarga.getText();
+//        if (!inputText.isEmpty()) {
+//            try {
+//                double hasil = Double.valueOf(inputText);
+//                double dm = hasil * 0.1;
+//                discMember.setText(String.valueOf(dm));
+//            } catch (NumberFormatException ex) {
+//                ex.printStackTrace(); 
+//            }
+//        } else {
+//           
+//        }
+    }//GEN-LAST:event_discMemberActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            
+            String ib = idBarang.getText();
+            String nb = namaBarang.getText();
+            String hb = hargaBarang.getText();
+            String qt = qty.getText();
+            String db = discBarang.getText();
+            String jmlh = jmlHarga.getText();
+            
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String tanggal = null;
+            Date tglSekarang = null;
+            try {
+                tglSekarang = new Date(sdf.parse(tanggal).getTime());
+                //        untuk keperluan id pembelian
+            } catch (ParseException ex) {
+                Logger.getLogger(frameBill.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+
+            SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
+            String tglSekarangId = sdfid.format(tglSekarang);
+            String idPembelian = "PL"+tglSekarangId+urutan;
+            
+            String query = "INSERT INTO penjualan (tanggal, idPenjualan, idMember, idPegawai, nama, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement prst = connect.prepareStatement(query)) {
+                prst.setDate(1, new java.sql.Date(tglSekarang.getTime()));
+                prst.setString(2, idPenjualan);
+                prst.setString(3, idMember);
+                prst.setString(4, idPegawai);
+                prst.setString(5, nama);
+                prst.setString(6, idBarang);
+                prst.setString(7, namaBarang);
+                prst.setString(8, hargaJual);
+                prst.setInt(9, jumlahBarang);
+                prst.setString(10, discBarang);
+//                prst.setString(11, jumlahHarga);
+//                prst.setString(11, totalHarga);
+//                prst.setString(11, discMember);
+//                prst.setString(11, hargaAkhir);
+            }
+            
+            DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
+            model.addRow(new Object[]{ib, nb, hb, qt, db, jmlh});
+        
+            } catch (SQLException ex) {
+            Logger.getLogger(framePenjualan.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+            Logger.getLogger(framePembelian.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        
+    }//GEN-LAST:event_addActionPerformed
 
     /**
      * @param args the command line arguments
@@ -84,8 +787,87 @@ public class frameBill extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea billing;
+    private javax.swing.JButton add;
+    private javax.swing.JTextField bayar;
+    private javax.swing.JLabel bg;
+    private javax.swing.JButton clear;
+    private javax.swing.JButton close;
+    private javax.swing.JLabel date;
+    private javax.swing.JTextField discBarang;
+    private javax.swing.JTextField discMember;
+    private javax.swing.JTextField email;
+    private javax.swing.JTextField hargaAkhir;
+    private javax.swing.JTextField hargaBarang;
+    private javax.swing.JTextField idBarang;
+    private javax.swing.JTextField idMember;
+    private javax.swing.JTextField idPegawai;
+    private javax.swing.JTextField idPenjualan;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextField jmlHarga;
+    private javax.swing.JTextField kembali;
+    private javax.swing.JCheckBox member;
+    private javax.swing.JTextField namaBarang;
+    private javax.swing.JTextField namaMember;
+    private javax.swing.JTextField namaPegawai;
+    private javax.swing.JTextField noHP;
+    private javax.swing.JButton print;
+    private javax.swing.JTextField qty;
+    private javax.swing.JButton save;
+    private javax.swing.JTable tabelPenjualan;
+    private javax.swing.JLabel time;
+    private javax.swing.JTextField totalHarga;
+    private javax.swing.JLabel txtBayar;
+    private javax.swing.JLabel txtDiscBarang;
+    private javax.swing.JLabel txtEmail;
+    private javax.swing.JLabel txtHargaBarang;
+    private javax.swing.JLabel txtHargaFinal;
+    private javax.swing.JLabel txtIDBarang;
+    private javax.swing.JLabel txtIDMember;
+    private javax.swing.JLabel txtIDPegawai;
+    private javax.swing.JLabel txtIDPenjualan;
+    private javax.swing.JLabel txtJmlHarga;
+    private javax.swing.JLabel txtKembali;
+    private javax.swing.JLabel txtNamaBarang;
+    private javax.swing.JLabel txtNamaMember;
+    private javax.swing.JLabel txtNamaPegawai;
+    private javax.swing.JLabel txtNoHP;
+    private javax.swing.JLabel txtQTY;
+    private javax.swing.JLabel txtTotalHarga;
     // End of variables declaration//GEN-END:variables
+
+    private void applyDiskonMember() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+          String inputText = txtTotalHarga.getText();
+          if (!inputText.isEmpty()) {
+            try {
+              double hasil = Double.parseDouble(inputText);
+              double dm = hasil * 0.1;
+              discMember.setText(String.valueOf(dm));
+              } catch (NumberFormatException ex) {
+                  ex.printStackTrace(); 
+                }
+            } else {
+
+              }
+    }
+
+    private void removeDiskonMember() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+          String inputText = txtTotalHarga.getText();
+            if (!inputText.isEmpty()) {
+                try {
+                    double hasil = Double.parseDouble(inputText);
+                    double dm = hasil * 0;
+                    discMember.setText(String.valueOf(dm));
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+
+            }
+    }
 }
