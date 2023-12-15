@@ -351,7 +351,7 @@ public class framePembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         String idPegawai = inputIdAdmin.getText();
     String statusPegawai = "admin";
-    String query = "SELECT nama FROM datapegawai WHERE idPegawai = ? AND status = ?";
+    String query = "SELECT namaPegawai FROM datapegawai WHERE idPegawai = ? AND status = ?";
     String namaPegawai = null;
 
     try {
@@ -364,7 +364,7 @@ public class framePembelian extends javax.swing.JFrame {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    namaPegawai = resultSet.getString("nama");
+                    namaPegawai = resultSet.getString("namaPegawai");
                 }
             }
         }

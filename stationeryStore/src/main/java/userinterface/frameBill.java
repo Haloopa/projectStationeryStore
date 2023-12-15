@@ -12,12 +12,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,12 +21,13 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author acer
  */
 public class frameBill extends javax.swing.JFrame {
-
+public int finalTotal=0;
     /**
      * Creates new form frameBill
      */
@@ -41,13 +36,13 @@ public class frameBill extends javax.swing.JFrame {
     public frameBill() {
         initComponents();
         
+        
         tableModel = (DefaultTableModel) tabelPenjualan.getModel();
 
        
         Timer timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshTableData();
             }
         });
         timer.start();
@@ -55,6 +50,18 @@ public class frameBill extends javax.swing.JFrame {
         refreshTableData();
     }
     
+//    private void tampilData() {
+//        DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
+//        Object rowData[] = new Object[6];
+//        rowData[0] = idBarang.getText();
+//        rowData[1] = namaBarang.getText();
+//        rowData[2] = hargaBarang.getText();
+//        rowData[3] = qty.getText();
+//        rowData[4] = discBarang.getText();
+//        rowData[5] = jmlHarga.getText();
+//        
+//        model.addRow(rowData);
+//    }
     
     private void refreshTableData() {
         try {
@@ -85,6 +92,29 @@ public class frameBill extends javax.swing.JFrame {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    private void hitungTotal(){
+        double subTotal = 0;
+        for (int a = 0; a < tabelPenjualan.getRowCount(); a++) {
+            Object cellValue = tabelPenjualan.getValueAt(a, 5).toString(); 
+            if (cellValue instanceof Double) {
+                subTotal += (Double) cellValue;
+            } else if (cellValue instanceof String) {
+                String stringValue = (String) cellValue;
+                if (!stringValue.isEmpty() && stringValue.matches("\\d+")) {
+                    try {
+                        double numericValue = Double.parseDouble(stringValue);
+                        subTotal += numericValue;
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace(); 
+                    }
+                }
+            }
+        }
+
+        totalHarga.setText(String.valueOf(subTotal));
+        System.out.println(subTotal);
     }
 
     /**
@@ -397,10 +427,20 @@ public class frameBill extends javax.swing.JFrame {
 
         clear.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         clear.setText("CLEAR");
+        clear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearActionPerformed(evt);
+            }
+        });
         jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 620, -1, -1));
 
         close.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         close.setText("CLOSE");
+        close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeActionPerformed(evt);
+            }
+        });
         jPanel1.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 580, -1, -1));
 
         print.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
@@ -486,24 +526,51 @@ public class frameBill extends javax.swing.JFrame {
 
     private void totalHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalHargaActionPerformed
         // TODO add your handling code here:
-        int subTotal = 0;
-        for (int a = 0; a < tabelPenjualan.getRowCount(); a++) {
-            Object cellValue = tabelPenjualan.getValueAt(a, 5); 
-            if (cellValue instanceof Integer) {
-                subTotal += (Integer) cellValue;
-            } else if (cellValue instanceof String) {
-                String stringValue = (String) cellValue;
-                if (!stringValue.isEmpty()) {
-                    try {
-                        int numericValue = Integer.parseInt(stringValue);
-                        subTotal += numericValue;
-                    } catch (NumberFormatException ex) {
-                        ex.printStackTrace(); 
-                        
-                    }
+//        double subTotal = 0;
+//        for (int a = 0; a < tabelPenjualan.getRowCount(); a++) {
+//            Object cellValue = tabelPenjualan.getValueAt(a, 5).toString(); 
+//            if (cellValue instanceof Double) {
+//                subTotal += (Double) cellValue;
+//            } else if (cellValue instanceof String) {
+//                String stringValue = (String) cellValue;
+//                if (!stringValue.isEmpty() && stringValue.matches("\\d+")) {
+//                    try {
+//                        double numericValue = Double.parseDouble(stringValue);
+//                        subTotal += numericValue;
+//                    } catch (NumberFormatException ex) {
+//                        ex.printStackTrace(); 
+//                    }
+//                }
+//            }
+//        }
+//
+//        totalHarga.setText(String.valueOf(subTotal));
+//        System.out.println(subTotal);
+
+double subTotal = 0;
+for (int a = 1; a < tabelPenjualan.getRowCount(); a++) {
+//    Object cellValue = tabelPenjualan.getValueAt(a, 5); 
+      Object cellValue = tabelPenjualan.getValueAt(a, 5);
+System.out.println("Nilai dari cellValue: " + cellValue);
+    if (cellValue != null) {
+        if (cellValue instanceof Double) {
+            subTotal += (Double) cellValue;
+        } else if (cellValue instanceof String) {
+            String stringValue = (String) cellValue;
+            if (!stringValue.isEmpty() && stringValue.matches("\\d+(\\.\\d+)?")) {
+                try {
+                    double numericValue = Double.parseDouble(stringValue);
+                    subTotal += numericValue;
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace(); 
                 }
             }
         }
+    }
+}
+
+totalHarga.setText(String.valueOf(subTotal));
+        hitungTotal();
     }//GEN-LAST:event_totalHargaActionPerformed
 
     private void hargaAkhirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hargaAkhirActionPerformed
@@ -643,6 +710,97 @@ public class frameBill extends javax.swing.JFrame {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         // TODO add your handling code here:
+        try {
+            ConnectionDatabase koneksidatabase;
+            koneksidatabase = ConnectionDatabase.getInstance();
+            Connection connect = koneksidatabase.getConnection();
+            
+            double hrb = Double.parseDouble(hargaBarang.getText());
+            int qt = Integer.parseInt(qty.getText());
+            double dscb = Double.parseDouble(discBarang.getText());
+
+            String ib = idBarang.getText();
+            String nb = namaBarang.getText();
+            String ip = idPenjualan.getText();
+            String idm = idMember.getText();
+            String idp = idPegawai.getText();
+            String np = namaPegawai.getText();
+            String ttlhrg = totalHarga.getText();
+            String dm = discMember.getText();
+            String jmlh = jmlHarga.getText();
+            String ha = hargaAkhir.getText();
+            
+            String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement prst = connect.prepareStatement(query)) {
+                
+                prst.setString(1, ip);
+                prst.setString(2, idm);
+                prst.setString(3, idp);
+                prst.setString(4, np);
+                prst.setString(5, ib);
+                prst.setString(6, nb);
+                prst.setDouble(7, hrb);
+                prst.setInt(8, qt);
+                prst.setDouble(9, dscb);
+                prst.setString(10, jmlh);
+                prst.setString(12, ttlhrg);
+                prst.setString(13, dm);
+                prst.setString(14, ha);
+            }
+            
+        
+            } catch (SQLException ex) {
+            Logger.getLogger(framePenjualan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        
+//         try {
+//        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+//        Connection connect = koneksidatabase.getConnection();
+//
+//        double hrb = Double.parseDouble(hargaBarang.getText());
+//        int qt = Integer.parseInt(qty.getText());
+//        double dscb = Double.parseDouble(discBarang.getText());
+//
+//        String ib = idBarang.getText();
+//        String nb = namaBarang.getText();
+//        String ip = idPenjualan.getText();
+//        String idm = idMember.getText();
+//        String idp = idPegawai.getText();
+//        String np = namaPegawai.getText();
+//
+//        // Pastikan jmlHarga berisi angka yang valid sebelum mengonversi
+//        String jmlHargaText = jmlHarga.getText();
+//        double jmlh = 0.0;
+//        if (!jmlHargaText.isEmpty() && jmlHargaText.matches("\\d+(\\.\\d+)?")) {
+//            jmlh = Double.parseDouble(jmlHargaText);
+//        } else {
+//            // Tampilkan pesan atau lakukan penanganan kesalahan jika tidak valid
+//            System.out.println("Jumlah Harga tidak valid");
+//        }
+//
+//        String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga) "
+//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//
+//        try (PreparedStatement prst = connect.prepareStatement(query)) {
+//            prst.setString(1, ip);
+//            prst.setString(2, idm);
+//            prst.setString(3, idp);
+//            prst.setString(4, np);
+//            prst.setString(5, ib);
+//            prst.setString(6, nb);
+//            prst.setDouble(7, hrb);
+//            prst.setInt(8, qt);
+//            prst.setDouble(9, dscb);
+//            prst.setDouble(10, jmlh);
+//
+//            prst.executeUpdate(); // Eksekusi penyimpanan ke database
+//        }
+//    } catch (NumberFormatException | SQLException ex) {
+//        // Tangani kesalahan yang mungkin terjadi
+//        ex.printStackTrace();
+//    }
     }//GEN-LAST:event_saveActionPerformed
 
     private void tabelPenjualanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelPenjualanMouseClicked
@@ -675,87 +833,135 @@ public class frameBill extends javax.swing.JFrame {
 
     private void discMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discMemberActionPerformed
         // TODO add your handling code here:
-//        String inputText = totalHarga.getText();
-//        if (!inputText.isEmpty()) {
-//            try {
-//                double hasil = Double.valueOf(inputText);
-//                double dm = hasil * 0.1;
-//                discMember.setText(String.valueOf(dm));
-//            } catch (NumberFormatException ex) {
-//                ex.printStackTrace(); 
-//            }
-//        } else {
-//           
-//        }
+        String inputText = totalHarga.getText();
+        if (!inputText.isEmpty()) {
+            try {
+                double hasil = Double.valueOf(inputText);
+                double dm = hasil * 0.1;
+                discMember.setText(String.valueOf(dm));
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace(); 
+            }
+        } else {
+           
+        }
     }//GEN-LAST:event_discMemberActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         // TODO add your handling code here:
-        try {
-            ConnectionDatabase koneksidatabase;
-            koneksidatabase = ConnectionDatabase.getInstance();
-            Connection connect = koneksidatabase.getConnection();
-            
-            
-            String ib = idBarang.getText();
-            String nb = namaBarang.getText();
-            String hb = hargaBarang.getText();
-            String qt = qty.getText();
-            String db = discBarang.getText();
-            String jmlh = jmlHarga.getText();
-            String ip = idPenjualan.getText();
-            String idm = idMember.getText();
-            String idp = idPegawai.getText();
-            String hrb = hargaBarang.getText();
-            String np = namaPegawai.getText();
-            String dscb = discBarang.getText();
-            String ttlhrg = totalHarga.getText();
-            String dm = discMember.getText();
-            String ha = hargaAkhir.getText();
-            
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String tanggal = null;
-            Date tglSekarang = null;
-            try {
-                tglSekarang = new Date(sdf.parse(tanggal).getTime());
-                //        untuk keperluan id pembelian
-            } catch (ParseException ex) {
-                Logger.getLogger(frameBill.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-
-            SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
-            String tglSekarangId = sdfid.format(tglSekarang);
-            String idPembelian = "PL"+tglSekarangId+urutan;
-            
-            String query = "INSERT INTO penjualan (tanggal, idPenjualan, idMember, idPegawai, nama, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga, totalHarga, discMember, hargaAkhir) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement prst = connect.prepareStatement(query)) {
-                prst.setDate(1, new java.sql.Date(tglSekarang.getTime()));
-                prst.setString(2, ip);
-                prst.setString(3, idm);
-                prst.setString(4, idp);
-                prst.setString(5, np);
-                prst.setString(6, ib);
-                prst.setString(7, nb);
-                prst.setString(8, hrb);
-                prst.setString(9, qt);
-                prst.setString(10, dscb);
-                prst.setString(11, jmlh);
-                prst.setString(12, ttlhrg);
-                prst.setString(13, dm);
-                prst.setString(14, ha);
-            }
-            
-            DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
-            model.addRow(new Object[]{ib, nb, hb, qt, db, jmlh});
+        DefaultTableModel model = (DefaultTableModel) tabelPenjualan.getModel();
+        Object rowData[] = new Object[6];
+        rowData[0] = idBarang.getText();
+        rowData[1] = namaBarang.getText();
+        rowData[2] = hargaBarang.getText();
+        rowData[3] = qty.getText();
+        rowData[4] = discBarang.getText();
+        rowData[5] = jmlHarga.getText();
         
-            } catch (SQLException ex) {
-            Logger.getLogger(framePenjualan.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        model.addRow(rowData);
         
+        double subTotal = 0;
+    for (int a = 1; a < model.getRowCount(); a++) {
+    //    Object cellValue = tabelPenjualan.getValueAt(a, 5); 
+          Object cellValue = tabelPenjualan.getValueAt(a, 5);
+    System.out.println("Nilai dari cellValue: " + cellValue);
+        if (cellValue != null) {
+            if (cellValue instanceof Double) {
+                subTotal += (Double) cellValue;
+            } else if (cellValue instanceof String) {
+                String stringValue = (String) cellValue;
+                if (!stringValue.isEmpty() && stringValue.matches("\\d+(\\.\\d+)?")) {
+                    try {
+                        double numericValue = Double.parseDouble(stringValue);
+                        subTotal += numericValue;
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace(); 
+                    }
+                }
+            }
+        }
+
+}
+        
+        
+        
+//       try {
+//        ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
+//        Connection connect = koneksidatabase.getConnection();
+//
+//        double hrb = Double.parseDouble(hargaBarang.getText());
+//        int qt = Integer.parseInt(qty.getText());
+//        double dscb = Double.parseDouble(discBarang.getText());
+//
+//        String ib = idBarang.getText();
+//        String nb = namaBarang.getText();
+//        String ip = idPenjualan.getText();
+//        String idm = idMember.getText();
+//        String idp = idPegawai.getText();
+//        String np = namaPegawai.getText();
+//
+//        // Pastikan jmlHarga berisi angka yang valid sebelum mengonversi
+//        String jmlHargaText = jmlHarga.getText();
+//        double jmlh = 0.0;
+//        if (!jmlHargaText.isEmpty() && jmlHargaText.matches("\\d+(\\.\\d+)?")) {
+//            jmlh = Double.parseDouble(jmlHargaText);
+//        } else {
+//            // Tampilkan pesan atau lakukan penanganan kesalahan jika tidak valid
+//            System.out.println("Jumlah Harga tidak valid");
+//        }
+//
+//        String query = "INSERT INTO penjualan (idPenjualan, idMember, idPegawai, namaPegawai, idBarang, namaBarang, hargaJual, jumlahBarang, discBarang, jumlahHarga) "
+//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//
+//        try (PreparedStatement prst = connect.prepareStatement(query)) {
+//            prst.setString(1, ip);
+//            prst.setString(2, idm);
+//            prst.setString(3, idp);
+//            prst.setString(4, np);
+//            prst.setString(5, ib);
+//            prst.setString(6, nb);
+//            prst.setDouble(7, hrb);
+//            prst.setInt(8, qt);
+//            prst.setDouble(9, dscb);
+//            prst.setDouble(10, jmlh);
+//
+//            prst.executeUpdate(); // Eksekusi penyimpanan ke database
+//        }
+//    } catch (NumberFormatException | SQLException ex) {
+//        // Tangani kesalahan yang mungkin terjadi
+//        ex.printStackTrace();
+//    }
         
     }//GEN-LAST:event_addActionPerformed
+
+    private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
+        // TODO add your handling code here:
+        frameMenuKasir kasir = new frameMenuKasir();
+        kasir.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_closeActionPerformed
+
+    private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
+        // TODO add your handling code here:
+        setVisible(false);
+        new frameBill().setVisible(true);
+        
+//        idBarang.setText("");
+//        namaBarang.setText("");
+//        hargaBarang.setText("");
+//        qty.setText("");
+//        discBarang.setText("");
+//        jmlHarga.setText("");
+//        idMember.setText("");
+//        namaMember.setText("");
+//        noHP.setText("");
+//        email.setText("");
+//        totalHarga.setText("");
+//        discMember.setText("");
+//        hargaAkhir.setText("");
+//        bayar.setText("");
+//        kembali.setText("");
+    }//GEN-LAST:event_clearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -847,7 +1053,7 @@ public class frameBill extends javax.swing.JFrame {
 
     private void applyDiskonMember() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-          String inputText = txtTotalHarga.getText();
+          String inputText = totalHarga.getText();
           if (!inputText.isEmpty()) {
             try {
               double hasil = Double.parseDouble(inputText);
@@ -863,7 +1069,7 @@ public class frameBill extends javax.swing.JFrame {
 
     private void removeDiskonMember() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-          String inputText = txtTotalHarga.getText();
+          String inputText = totalHarga.getText();
             if (!inputText.isEmpty()) {
                 try {
                     double hasil = Double.parseDouble(inputText);

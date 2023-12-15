@@ -34,8 +34,8 @@ public class framePenjualan extends javax.swing.JFrame {
     NumberFormat nf = NumberFormat.getNumberInstance(new Locale("in", "ID"));
     public framePenjualan() {
         initComponents();
-        SimpleDateFormat.dFormat
-        IDBarang();
+//        SimpleDateFormat.dFormat
+//        IDBarang();
         Total();
         FinalHarga();
         
