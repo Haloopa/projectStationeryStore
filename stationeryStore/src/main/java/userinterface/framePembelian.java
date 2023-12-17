@@ -277,17 +277,20 @@ public class framePembelian extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-     private String getIdPembelian(String tanggal) {
-        SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
-        String tglSekarangId = sdfid.format(tanggal);
-        return "PL" + tglSekarangId + urutan;
+private String getIdPembelian(Date tglSekarang, int urutan) {
+    if (tglSekarang == null) {
+        throw new IllegalArgumentException("tglSekarang cannot be null");
     }
+
+    SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
+    String tglSekarangId = sdfid.format(tglSekarang);
+    return "PL" + tglSekarangId + urutan;
+}
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         // TODO add your handling code here:
         LocalDateTime currentime = LocalDateTime.now();
-        DateTimeFormatter formatt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String tanggalSekarang = currentime.format(formatt);
+    DateTimeFormatter formatt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String tanggalSekarang = currentime.format(formatt);
         labelTanggal.setText(tanggalSekarang);
         
         
@@ -310,10 +313,10 @@ public class framePembelian extends javax.swing.JFrame {
             
             String tanggal = labelTanggal.getText();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date tglSekarang = new Date(sdf.parse(tanggal).getTime());
+        Date tglSekarang = new Date(sdf.parse(tanggalSekarang).getTime());
         
         
-        String idPembelian = getIdPembelian(tanggalSekarang);
+        String idPembelian = getIdPembelian(tglSekarang, urutan);
         
         String query = "INSERT INTO pembelian (tanggal, idPembelian, idPegawai, namaPegawai, namaDistributor, idBarang, namaBarang, isiPerBox, jumlahBeli, hargaBeli, subTotal) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -470,11 +473,16 @@ public class framePembelian extends javax.swing.JFrame {
         String idPembelian = (String) tabelPembelian.getValueAt(row, 0);
         labelIdPembelian.setText(idPembelian);
         
+        if (tabelPembelian.getValueAt(row, 1) instanceof java.sql.Date) {
         java.sql.Date tanggalSql = (java.sql.Date) tabelPembelian.getValueAt(row, 1);
-        
-//        Ubah java.sql.Date menjadi string dengan menggunakan SimpleDateFormat
+
         String tanggal = new SimpleDateFormat("yyyy-MM-dd").format(tanggalSql);
         labelTanggal.setText(tanggal);
+    } else {
+        
+        System.err.println("Error: Tipe data kolom tanggal tidak sesuai.");
+        labelTanggal.setText("");
+    }
         
         String idAdmin = (String) tabelPembelian.getValueAt(row, 2);
         inputIdAdmin.setText(idAdmin);
