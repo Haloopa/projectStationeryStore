@@ -313,12 +313,7 @@ public class framePembelian extends javax.swing.JFrame {
         Date tglSekarang = new Date(sdf.parse(tanggal).getTime());
         
         
-//        untuk keperluan id pembelian
-        
-        
-        SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
-        String tglSekarangId = sdfid.format(tglSekarang);
-        String idPembelian = getIdPembelian(tglSekarangId);
+        String idPembelian = getIdPembelian(tanggalSekarang);
         
         String query = "INSERT INTO pembelian (tanggal, idPembelian, idPegawai, namaPegawai, namaDistributor, idBarang, namaBarang, isiPerBox, jumlahBeli, hargaBeli, subTotal) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
