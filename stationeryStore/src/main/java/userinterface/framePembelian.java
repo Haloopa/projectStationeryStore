@@ -308,7 +308,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
             int jumlah = Integer.parseInt(inputJumlah.getText());
             int isi = Integer.parseInt(inputIsiPerBox.getText());
             int harga = Integer.parseInt(inputHargaPerBox.getText());
-            int total = isi*harga;
+            int total = jumlah*harga;
             
             
             String tanggal = labelTanggal.getText();
