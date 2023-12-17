@@ -35,7 +35,7 @@ public class framePembelian extends javax.swing.JFrame {
      * Creates new form framePembelian
      */
     private DefaultTableModel tableModel;
-    private int urutan = 1;
+    private static int urutan = 1;
     public framePembelian() {
         initComponents();
         
@@ -278,6 +278,11 @@ public class framePembelian extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+     private String getIdPembelian(String tanggal) {
+        SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
+        String tglSekarangId = sdfid.format(tanggal);
+        return "PL" + tglSekarangId + urutan;
+    }
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         // TODO add your handling code here:
         LocalDateTime currentime = LocalDateTime.now();
@@ -302,16 +307,18 @@ public class framePembelian extends javax.swing.JFrame {
             int harga = Integer.parseInt(inputHargaPerBox.getText());
             int total = isi*harga;
             
+            
             String tanggal = labelTanggal.getText();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date tglSekarang = new Date(sdf.parse(tanggal).getTime());
+        
         
 //        untuk keperluan id pembelian
         
         
         SimpleDateFormat sdfid = new SimpleDateFormat("ddMM");
         String tglSekarangId = sdfid.format(tglSekarang);
-        String idPembelian = "PL"+tglSekarangId+urutan;
+        String idPembelian = getIdPembelian(tglSekarangId);
         
         String query = "INSERT INTO pembelian (tanggal, idPembelian, idPegawai, namaPegawai, namaDistributor, idBarang, namaBarang, isiPerBox, jumlahBeli, hargaBeli, subTotal) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
