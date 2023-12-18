@@ -247,31 +247,38 @@ public class frameDataBarang extends javax.swing.JFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        FrameLanding landing = new FrameLanding();
-        landing.setVisible(true);
+        frameMenuAdmin Admin = new frameMenuAdmin();
+        Admin.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        try{
-            String sql = "UPDATE datapegawai SET idBarang = '" + inputIdBarang.getText()
-                    + "' , namaBarang = '" + inputNamaBarang.getText()
-                    + "' , kategoriBarang = '" + inputKategori.getSelectedItem()
-                    + "' , jumlahBarang = '" + inputJumlahBarang.getText()
-                    + "' , hargaBeli = '" + inputHargaBeli.getText()
-                    + "' , hargaJual = '" + inputHargaJual.getText()
-                    + "' , namaSupplier = '" + inputNamaSupplier.getText()
-                    + "' WHERE idBarang = '" + inputIdBarang.getText() + "'";
-            
-            ConnectionDatabase koneksidatabase;
-            koneksidatabase = ConnectionDatabase.getInstance();
+        try {
+            double hargaBeli = Double.parseDouble(inputHargaBeli.getText());
+            int jumlahBarang = Integer.parseInt(inputJumlahBarang.getText());
+            double keuntunganPercentage = 0.2;
+            double hargaJualPerPcs = (hargaBeli / jumlahBarang) * (1 + keuntunganPercentage);
+
+            inputHargaJual.setText(String.valueOf(hargaJualPerPcs));
+
+            String sql = "UPDATE databarang SET idBarang=?, namaBarang=?, kategoriBarang=?, jumlahBarang=?, hargaBeli=?, hargaJual=?, namaSupplier=? WHERE idBarang=?";
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.execute();
+            ps.setString(1, inputIdBarang.getText());
+            ps.setString(2, inputNamaBarang.getText());
+            ps.setString(3, (String) inputKategori.getSelectedItem());
+            ps.setInt(4, jumlahBarang);
+            ps.setDouble(5, hargaBeli);
+            ps.setDouble(6, hargaJualPerPcs); // Gunakan harga jual yang dihitung
+            ps.setString(7, inputNamaSupplier.getText());
+            ps.setString(8, inputIdBarang.getText());
+            ps.executeUpdate();
+
             JOptionPane.showMessageDialog(null, "Data Barang Berhasil Diubah!");
             showData();
             refreshForm();
-        } catch (HeadlessException | SQLException e) {
+        } catch (NumberFormatException | SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_btnUbahActionPerformed
