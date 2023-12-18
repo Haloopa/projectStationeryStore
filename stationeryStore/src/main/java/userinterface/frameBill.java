@@ -400,7 +400,7 @@ public int finalTotal=0;
         jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 600, -1, 20));
 
         close.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        close.setText("CLOSE");
+        close.setText("BACK");
         close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeActionPerformed(evt);
