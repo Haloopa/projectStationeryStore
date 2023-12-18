@@ -114,29 +114,23 @@ public class framePembelian extends javax.swing.JFrame {
         tabelPembelian = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
         labelTanggal = new javax.swing.JLabel();
+        inputIdPembelian = new javax.swing.JTextField();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        labelIdPembelian.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(labelIdPembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
 
-        inputIdBarang.setBackground(new java.awt.Color(255, 255, 255));
-        inputIdBarang.setForeground(new java.awt.Color(0, 0, 0));
         inputIdBarang.setBorder(null);
         jPanel1.add(inputIdBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 250, 20));
 
-        inputIdAdmin.setBackground(new java.awt.Color(255, 255, 255));
-        inputIdAdmin.setForeground(new java.awt.Color(0, 0, 0));
         inputIdAdmin.setBorder(null);
         jPanel1.add(inputIdAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 250, 20));
 
         btnCariBarang.setBackground(new java.awt.Color(153, 255, 153));
         btnCariBarang.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        btnCariBarang.setForeground(new java.awt.Color(0, 0, 0));
         btnCariBarang.setText("Cari");
         btnCariBarang.setBorder(null);
         btnCariBarang.addActionListener(new java.awt.event.ActionListener() {
@@ -148,7 +142,6 @@ public class framePembelian extends javax.swing.JFrame {
 
         btnCariAdmin.setBackground(new java.awt.Color(153, 255, 153));
         btnCariAdmin.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        btnCariAdmin.setForeground(new java.awt.Color(0, 0, 0));
         btnCariAdmin.setText("Cari");
         btnCariAdmin.setBorder(null);
         btnCariAdmin.addActionListener(new java.awt.event.ActionListener() {
@@ -157,45 +150,30 @@ public class framePembelian extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnCariAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 260, 100, 40));
-
-        labelNamaAdmin.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(labelNamaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 326, 360, 30));
 
-        inputDistributor.setBackground(new java.awt.Color(255, 255, 255));
-        inputDistributor.setForeground(new java.awt.Color(0, 0, 0));
         inputDistributor.setBorder(null);
         jPanel1.add(inputDistributor, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 360, 20));
-
-        labelNamaBarang.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(labelNamaBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 500, 370, 40));
 
-        inputJumlah.setBackground(new java.awt.Color(255, 255, 255));
-        inputJumlah.setForeground(new java.awt.Color(0, 0, 0));
         inputJumlah.setBorder(null);
         jPanel1.add(inputJumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(42, 570, 150, 20));
 
-        inputIsiPerBox.setBackground(new java.awt.Color(255, 255, 255));
-        inputIsiPerBox.setForeground(new java.awt.Color(0, 0, 0));
         inputIsiPerBox.setBorder(null);
         jPanel1.add(inputIsiPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 570, 160, 20));
 
-        inputHargaPerBox.setBackground(new java.awt.Color(255, 255, 255));
-        inputHargaPerBox.setForeground(new java.awt.Color(0, 0, 0));
         inputHargaPerBox.setBorder(null);
         jPanel1.add(inputHargaPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 630, 360, 20));
 
         labelRP.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 36)); // NOI18N
-        labelRP.setForeground(new java.awt.Color(0, 0, 0));
         labelRP.setText("Rp");
         jPanel1.add(labelRP, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 660, -1, 50));
 
         labelTotalHarga.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 36)); // NOI18N
-        labelTotalHarga.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(labelTotalHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 660, 190, 50));
 
         btnHapus.setBackground(new java.awt.Color(219, 216, 216));
         btnHapus.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
-        btnHapus.setForeground(new java.awt.Color(0, 0, 0));
         btnHapus.setText("Hapus");
         btnHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,7 +184,6 @@ public class framePembelian extends javax.swing.JFrame {
 
         btnTambah.setBackground(new java.awt.Color(219, 216, 216));
         btnTambah.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
-        btnTambah.setForeground(new java.awt.Color(0, 0, 0));
         btnTambah.setText("Tambah");
         btnTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -217,7 +194,6 @@ public class framePembelian extends javax.swing.JFrame {
 
         btnUbah.setBackground(new java.awt.Color(219, 216, 216));
         btnUbah.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
-        btnUbah.setForeground(new java.awt.Color(0, 0, 0));
         btnUbah.setText("Ubah");
         btnUbah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,9 +242,10 @@ public class framePembelian extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 20, 120, 40));
-
-        labelTanggal.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(labelTanggal, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 220, 20));
+
+        inputIdPembelian.setBorder(null);
+        jPanel1.add(inputIdPembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 340, -1));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/background/pagePembelian.png"))); // NOI18N
         jPanel1.add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -338,7 +315,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Data Pengembalian Berhasil ditambahkan!", "Pesan", JOptionPane.INFORMATION_MESSAGE);
                 urutan++;
-                labelIdPembelian.setText(idPembelian);
+                inputIdPembelian.setText(idPembelian);
                 labelTotalHarga.setText(String.valueOf(total));
             } else {
                 JOptionPane.showMessageDialog(this, "Gagal menambahkan data ke tabel pengembalian", "Pesan", JOptionPane.INFORMATION_MESSAGE);
@@ -437,7 +414,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
             koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             
-            String idPembelian = labelIdPembelian.getText();
+            String idPembelian = inputIdPembelian.getText();
             String query = "DELETE FROM pembelian WHERE idPembelian = ?";
             PreparedStatement statement = connect.prepareStatement(query);
             
@@ -471,7 +448,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
         }
         
         String idPembelian = (String) tabelPembelian.getValueAt(row, 0);
-        labelIdPembelian.setText(idPembelian);
+        inputIdPembelian.setText(idPembelian);
         
         if (tabelPembelian.getValueAt(row, 1) instanceof java.sql.Date) {
         java.sql.Date tanggalSql = (java.sql.Date) tabelPembelian.getValueAt(row, 1);
@@ -517,7 +494,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
         koneksidatabase = ConnectionDatabase.getInstance();
         Connection connect = koneksidatabase.getConnection();
         
-        String idPembelian = labelIdPembelian.getText();
+        String idPembelian = inputIdPembelian.getText();
         String idPegawai = inputIdAdmin.getText();
             String namaAdmin = labelNamaAdmin.getText();
             String distributor = inputDistributor.getText();
@@ -604,6 +581,7 @@ private String getIdPembelian(Date tglSekarang, int urutan) {
     private javax.swing.JTextField inputHargaPerBox;
     private javax.swing.JTextField inputIdAdmin;
     private javax.swing.JTextField inputIdBarang;
+    private javax.swing.JTextField inputIdPembelian;
     private javax.swing.JTextField inputIsiPerBox;
     private javax.swing.JTextField inputJumlah;
     private javax.swing.JPanel jPanel1;
