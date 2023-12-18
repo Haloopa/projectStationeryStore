@@ -262,27 +262,39 @@ public class frameDataPegawai extends javax.swing.JFrame {
     }//GEN-LAST:event_inputNamaPegawaiActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        try{
-            String sql = "UPDATE datapegawai SET idPegawai = '" + inputIdPegawai.getText()
-                    + "' , namaPegawai = '" + inputNamaPegawai.getText()
-                    + "' , nomorHpPegawai = '" + inputNomorHpPegawai.getText()
-                    + "' , emailPegawai = '" + inputEmailPegawai.getText()
-                    + "' , alamatPegawai = '" + inputAlamatPegawai.getText()
-                    + "' , gender = '" + inputGender.getSelectedItem()
-                    + "' , password = '" + inputPassword.getText()
-                    + "' , status = '" + inputStatus.getSelectedItem()
-                    + "' WHERE idPegawai = '" + inputIdPegawai.getText() + "'";
-            
-            ConnectionDatabase koneksidatabase;
-            koneksidatabase = ConnectionDatabase.getInstance();
+        try {
+            String sql = "UPDATE datapegawai SET idPegawai=?, namaPegawai=?, nomorHpPegawai=?, emailPegawai=?, alamatPegawai=?, gender=?, password=?, status=? WHERE idPegawai=?";
+
+            ConnectionDatabase koneksidatabase = ConnectionDatabase.getInstance();
             Connection connect = koneksidatabase.getConnection();
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.execute();
-            JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Diubah!");
-            showData();
-            refreshForm();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+
+            // Mengatur nilai parameter menggunakan data dari input
+            ps.setString(1, inputIdPegawai.getText());
+            ps.setString(2, inputNamaPegawai.getText());
+            ps.setString(3, inputNomorHpPegawai.getText());
+            ps.setString(4, inputEmailPegawai.getText());
+            ps.setString(5, inputAlamatPegawai.getText());
+            ps.setString(6, (String) inputGender.getSelectedItem()); // Pastikan ini adalah string, bukan objek
+            ps.setString(7, inputPassword.getText());
+            ps.setString(8, (String) inputStatus.getSelectedItem());
+            ps.setString(9, inputIdPegawai.getText());
+
+            // Mengeksekusi query UPDATE
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Data Pegawai Berhasil Diubah!");
+                showData();
+                refreshForm();
+            } else {
+                JOptionPane.showMessageDialog(null, "Tidak ada data dengan ID Pegawai yang sesuai.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error executing SQL query:\n" + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error:\n" + e.getMessage());
         }
     }//GEN-LAST:event_btnUbahActionPerformed
 
